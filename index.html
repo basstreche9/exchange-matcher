@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CY Tech — Exchange Matcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--s1:#13131a;--s2:#1c1c26;--bd:#2a2a38;--ac:#6c63ff;--r:#ff6584;--g:#00e5a0;--y:#ffd166;--tx:#e8e8f0;--mu:#6b6b8a;--fh:'Syne',sans-serif;--fm:'Space Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--fh);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);background-size:40px 40px;opacity:.2;pointer-events:none;z-index:0}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;background:#0a0a0f;z-index:9999;display:flex;align-items:center;justify-content:center;padding:2rem}
+.splash-inner{max-width:780px;width:100%}
+.splash-tag{font-family:var(--fm);font-size:10px;letter-spacing:.2em;color:var(--mu);text-transform:uppercase;margin-bottom:1.5rem}
+.splash-msg{font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:600;line-height:1.6;color:var(--tx);margin-bottom:2rem}
+.splash-msg em{color:var(--ac);font-style:normal}
+.splash-msg strong{color:var(--g)}
+.splash-sub{font-family:var(--fm);font-size:11px;color:var(--mu);line-height:1.8;margin-bottom:2rem;border-left:2px solid var(--bd);padding-left:1rem}
+.splash-anon{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:10px;color:var(--mu);background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:6px 12px;margin-bottom:2rem}
+.anon-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.splash-btn{padding:14px 36px;background:var(--ac);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--fh);transition:all .2s;letter-spacing:.03em}
+.splash-btn:hover{background:#7c74ff;transform:translateY(-2px)}
+.splash-line{height:1px;background:var(--bd);margin-bottom:2rem}
+
+/* MAIN */
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem}
+header{margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.hd-left .logo{font-size:10px;letter-spacing:.2em;color:var(--mu);font-family:var(--fm);text-transform:uppercase;margin-bottom:.3rem}
+h1{font-size:clamp(1.6rem,3.5vw,2.5rem);font-weight:800;line-height:1.1}
+h1 span{color:var(--ac)}
+.subtitle{color:var(--mu);font-family:var(--fm);font-size:10px;margin-top:.4rem}
+.anon-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:10px;color:var(--mu);background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:5px 10px}
+
+.tabs{display:flex;gap:2px;background:var(--s1);border-radius:12px;padding:4px;width:fit-content;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{padding:7px 15px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--mu);border:none;background:none;font-family:var(--fh)}
+.tab.active{background:var(--ac);color:#fff}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:1.3rem;margin-bottom:1rem}
+.ct{font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.9rem;font-family:var(--fm)}
+label{font-size:10px;color:var(--mu);font-family:var(--fm);display:block;margin-bottom:4px;letter-spacing:.04em}
+input,select{width:100%;padding:8px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:var(--fm);font-size:12px;outline:none;transition:border .2s}
+input:focus,select:focus{border-color:var(--ac)}
+input[type=range]{padding:4px 0;background:none;border:none}
+.rr{display:flex;align-items:center;gap:10px}
+.rv{font-size:20px;font-weight:700;color:var(--ac);min-width:44px;font-family:var(--fm)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+.sb{position:relative;margin-bottom:.6rem}
+.sb input{padding-left:30px}
+.si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:11px;pointer-events:none}
+.fr{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem}
+.fb{padding:3px 9px;border-radius:20px;border:1px solid var(--bd);background:none;color:var(--mu);font-size:10px;cursor:pointer;font-family:var(--fm);transition:all .15s;white-space:nowrap}
+.fb.on{border-color:var(--ac);color:var(--ac);background:rgba(108,99,255,.08)}
+.fb.sg{border-color:var(--g);color:var(--g);background:rgba(0,229,160,.07)}
+
+/* UNI LIST */
+.ul{max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.ul::-webkit-scrollbar{width:3px}
+.ul::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.ui{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:8px;cursor:pointer;transition:all .12s;gap:5px}
+.ui:hover{border-color:var(--ac)}
+.ui.sel{border-color:var(--ac);background:rgba(108,99,255,.07)}
+.un{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.us{font-size:9px;color:var(--mu);font-family:var(--fm);margin-top:1px}
+.ubs{display:flex;gap:3px;flex-shrink:0}
+.bdg{font-size:9px;padding:2px 5px;border-radius:4px;font-family:var(--fm);white-space:nowrap}
+.bf{background:rgba(0,229,160,.12);color:var(--g)}
+.bp{background:rgba(255,209,102,.12);color:var(--y)}
+.bu{background:rgba(255,101,132,.1);color:var(--r)}
+.bw{background:rgba(255,209,102,.1);color:var(--y)}
+
+/* DRAG AND DROP RANKING */
+.rk-list{display:flex;flex-direction:column;gap:6px;min-height:40px}
+.rk-item{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:8px;cursor:grab;transition:border .15s;user-select:none}
+.rk-item:active{cursor:grabbing}
+.rk-item.dragging{opacity:.4;border:1px dashed var(--ac)}
+.rk-item.dragover{border-color:var(--g);background:rgba(0,229,160,.05)}
+.drag-handle{color:var(--mu);font-size:14px;cursor:grab;padding:0 2px;flex-shrink:0}
+.rk-num{font-size:18px;font-weight:800;color:var(--ac);min-width:24px;font-family:var(--fm)}
+.rk-info{flex:1}
+.rk-name{font-size:12px;font-weight:600}
+.rk-sub{font-size:9px;color:var(--mu);font-family:var(--fm);margin-top:1px}
+.rk-rm{background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;padding:4px;transition:color .15s;flex-shrink:0}
+.rk-rm:hover{color:var(--r)}
+
+.btn{padding:10px 22px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--fh);border:none}
+.bpa{background:var(--ac);color:#fff}.bpa:hover{background:#7c74ff;transform:translateY(-1px)}
+.bsa{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}.bsa:hover{border-color:var(--ac)}
+.bga{background:var(--g);color:#000}.bga:hover{background:#00f5b0}
+.ifr{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:.8rem}
+.sg{margin-top:.8rem}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:720px){.tc{grid-template-columns:1fr}}
+
+/* SIMULATE */
+.ss{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:7px;margin-bottom:1.2rem}
+.sb2{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+.sl{font-size:9px;color:var(--mu);font-family:var(--fm);letter-spacing:.08em;margin-bottom:2px}
+.sv{font-size:20px;font-weight:800}
+.sva{color:var(--ac)}.svg{color:var(--g)}.svy{color:var(--y)}.svr{color:var(--r)}
+.rt{width:100%;border-collapse:collapse;font-size:11px}
+.rt th{text-align:left;padding:6px 9px;font-family:var(--fm);font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--bd)}
+.rt td{padding:7px 9px;border-bottom:1px solid rgba(42,42,56,.4);vertical-align:middle}
+.rt tr:hover td{background:rgba(255,255,255,.02)}
+.yr td{background:rgba(108,99,255,.1)!important}
+.yr td:first-child{border-left:3px solid var(--ac)}
+.pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:9px;font-family:var(--fm)}
+.pok{background:rgba(0,229,160,.12);color:var(--g)}
+.pno{background:rgba(255,101,132,.1);color:var(--r)}
+.al{padding:10px 13px;border-radius:8px;font-size:11px;margin-bottom:.7rem;font-family:var(--fm)}
+.ai{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.3);color:var(--ac)}
+.as{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.3);color:var(--g)}
+.aw{background:rgba(255,209,102,.1);border:1px solid rgba(255,209,102,.3);color:var(--y)}
+.ar{background:rgba(255,101,132,.1);border:1px solid rgba(255,101,132,.3);color:var(--r)}
+.tw{overflow-x:auto;max-height:500px;overflow-y:auto}
+.tw::-webkit-scrollbar{height:3px;width:3px}
+.tw::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:5px}
+.ci{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:8px 10px}
+.cin{font-size:10px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbw{background:var(--bg);border-radius:3px;height:4px;overflow:hidden;margin:3px 0}
+.cb{height:100%;border-radius:3px;background:var(--ac)}
+.cb.full{background:var(--r)}
+.cn2{font-size:9px;color:var(--mu);font-family:var(--fm)}
+.es{text-align:center;padding:2.5rem 1rem;color:var(--mu)}
+.info-import{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1rem}
+.ii-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,42,56,.3)}
+.ii-row:last-child{border-bottom:none}
+.ii-label{font-size:10px;color:var(--mu);font-family:var(--fm);width:140px;flex-shrink:0}
+.ii-val{font-size:12px;font-weight:600}
+.ii-auto{font-size:9px;background:rgba(0,229,160,.1);color:var(--g);padding:2px 6px;border-radius:4px;font-family:var(--fm);margin-left:auto}
+</style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-tag">// MESSAGE À LA DIRECTION DES RELATIONS INTERNATIONALES · CYTECH · ANONYME</div>
+    <div class="splash-line"></div>
+    <div class="splash-msg">
+      Vous dirigez une <em>école d'ingénieurs</em>.<br>
+      Un de vos étudiants a résolu votre problème <em>en quelques heures</em>.<br>
+      Vous, vous ne l'avez pas résolu.
+    </div>
+    <div class="splash-sub">
+      Cette année : ~200 étudiants ont candidaté sans leurs résultats complets, sans connaître les autres candidats, sans visibilité sur les vraies places disponibles. Résultat : des étudiants refusés sur tous leurs vœux. Pas par manque de mérite — par manque d'information.<br><br>
+      Ce prototype utilise l'algorithme de Gale-Shapley (Prix Nobel 2012). Données importées automatiquement depuis l'ENT. Résultat optimal et stable. Zéro dossier injustement refusé.<br><br>
+      <strong>Il a été construit seul, en dehors des heures de cours.</strong>
+    </div>
+    <div class="splash-anon"><div class="anon-dot"></div>Source anonyme · Aucun auteur identifiable · Hébergé hors infrastructure CY Tech</div>
+    <div style="margin-top:1.5rem;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="splash-btn" onclick="closeSplash()">Voir la démonstration →</button>
+      <button class="splash-btn" style="background:transparent;border:1px solid var(--bd);color:var(--mu)" onclick="closeSplash()">Passer</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="main" style="display:none">
+  <header>
+    <div class="hd-left">
+      <div class="logo">CY Tech · Relations Internationales · Prototype</div>
+      <h1>Exchange <span>Matcher</span></h1>
+      <div class="subtitle">// Algorithme de Gale-Shapley · 200 candidats simulés · Toutes universités partenaires</div>
+    </div>
+    <div class="anon-badge"><div class="anon-dot"></div>Soumis anonymement</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('setup')">① Profil étudiant</button>
+    <button class="tab" onclick="showTab('rank')">② Mes vœux</button>
+    <button class="tab" onclick="showTab('sim')">③ Simulation</button>
+    <button class="tab" onclick="showTab('all')">📋 Universités</button>
+    <button class="tab" onclick="showTab('algo')">⚙ Algorithme</button>
+  </div>
+
+  <!-- SETUP -->
+  <div id="tab-setup">
+    <div class="card">
+      <div class="ct">// Dans la vraie version — données importées automatiquement depuis l'ENT</div>
+      <div class="info-import">
+        <div class="ii-row"><div class="ii-label">Nom étudiant</div><div class="ii-val" id="disp-name">—</div><div class="ii-auto">ENT → auto</div></div>
+        <div class="ii-row"><div class="ii-label">Spécialisation</div><div class="ii-val" id="disp-spec">—</div><div class="ii-auto">ENT → auto</div></div>
+        <div class="ii-row"><div class="ii-label">Campus</div><div class="ii-val" id="disp-campus">—</div><div class="ii-auto">ENT → auto</div></div>
+        <div class="ii-row"><div class="ii-label">Moyenne ING1</div><div class="ii-val" id="disp-avg">—</div><div class="ii-auto">ENT → auto</div></div>
+        <div class="ii-row"><div class="ii-label">UE validées S1</div><div class="ii-val" id="disp-ue">—</div><div class="ii-auto">ENT → auto</div></div>
+      </div>
+      <div class="al ai" style="margin-bottom:1rem">ℹ️ Dans la vraie version : aucune saisie manuelle. Tout vient de l'ENT. Pas de triche possible sur la moyenne.</div>
+    </div>
+    <div class="card">
+      <div class="ct">// Simulation — paramètres de démonstration</div>
+      <div class="g2">
+        <div><label>Ton prénom (pour la démo)</label><input id="s-name" placeholder="Étudiant(e)" oninput="updDisp()"></div>
+        <div><label>Spécialisation</label>
+          <select id="s-spec" onchange="updDisp();renderUL()">
+            <option value="GI">Informatique (GI)</option>
+            <option value="MI">Maths-Info (MI)</option>
+            <option value="MF">Maths-Finance (MF)</option>
+            <option value="GC">Génie Civil (GC)</option>
+            <option value="BTC">Biotechnologie (BTC)</option>
+            <option value="Design">Design</option>
+          </select>
+        </div>
+        <div><label>Campus</label><select id="s-campus" onchange="updDisp()"><option>Cergy</option><option>Pau</option></select></div>
+        <div><label>Semestre</label><select id="s-sem"><option value="any">Sans préférence</option><option value="S1">S1</option><option value="S2">S2</option></select></div>
+      </div>
+      <div class="sg">
+        <label>Moyenne ING1 : <strong id="avg-d" style="color:var(--ac)">12.0 / 20</strong></label>
+        <div class="rr"><input type="range" id="s-avg" min="5" max="20" step="0.1" value="12.0" oninput="avgUpd(this.value)" style="flex:1"><div class="rv" id="avg-v">12.0</div></div>
+      </div>
+      <div style="margin:.8rem 0;padding:10px 13px;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.35);border-radius:8px;font-family:var(--fm);font-size:11px;color:var(--y);line-height:1.7">
+        ⚡ Dans la vraie version, cette section disparaît entièrement. Moyenne, spécialisation, campus et résultats d'UE sont importés automatiquement depuis l'ENT CY Tech à la connexion — aucune saisie manuelle, aucune falsification possible. L'étudiant n'entre que ses vœux dans l'ordre de préférence.
+      </div>
+      <div class="ifr">
+        <button class="btn bpa" onclick="showTab('rank')">Choisir mes vœux →</button>
+        <button class="btn bsa" onclick="regen()">↻ Regénérer 199 autres candidats</button>
+        <span id="s-cnt" style="font-size:10px;color:var(--mu);font-family:var(--fm)"></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">// Distribution des moyennes</div>
+      <canvas id="dist" height="100"></canvas>
+      <div id="dist-i" style="margin-top:.6rem;font-size:10px;color:var(--mu);font-family:var(--fm)"></div>
+    </div>
+  </div>
+
+  <!-- RANK -->
+  <div id="tab-rank" style="display:none">
+    <div class="tc">
+      <div class="card">
+        <div class="ct">// Universités disponibles pour ta filière</div>
+        <div class="sb"><span class="si">⌕</span><input id="u-s" placeholder="Rechercher..." oninput="renderUL()"></div>
+        <div class="fr" id="rfilt"></div>
+        <div class="fr" id="cfilt"></div>
+        <div style="font-size:9px;color:var(--mu);font-family:var(--fm);margin-bottom:.4rem" id="ul-cnt"></div>
+        <div class="ul" id="ul"></div>
+      </div>
+      <div class="card">
+        <div class="ct">// Mes vœux — glisser-déposer pour réordonner</div>
+        <div id="rk-empty" class="es" style="padding:1.5rem"><div style="font-size:24px">←</div><div style="font-size:11px;margin-top:.4rem">Clique sur une université pour l'ajouter</div></div>
+        <div class="rk-list" id="rk-list"></div>
+        <div id="rk-act" style="display:none;margin-top:.9rem">
+          <div class="al ai" id="rk-tip"></div>
+          <div class="ifr"><button class="btn bga" onclick="showTab('sim')">Simuler →</button><button class="btn bsa" onclick="clearRk()">Effacer tout</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIMULATE -->
+  <div id="tab-sim" style="display:none">
+    <div id="sim-empty" class="card"><div class="es"><div style="font-size:28px">⚡</div><div style="font-size:12px;margin-top:.5rem">Ajoute des vœux d'abord</div><div class="sg"><button class="btn bsa" onclick="showTab('rank')">← Mes vœux</button></div></div></div>
+    <div id="sim-ok" style="display:none">
+      <div class="ss" id="sim-s"></div>
+      <div class="card"><div class="ct">// Ton résultat</div><div id="my-r"></div></div>
+      <div class="card">
+        <div class="ct">// Classement complet — 200 candidats</div>
+        <div class="ifr" style="margin-bottom:.7rem">
+          <button class="btn bsa" onclick="runSim()">↻ Relancer</button>
+          <input id="ts" placeholder="Filtrer..." style="width:150px;padding:6px 10px;font-size:11px" oninput="fTbl()">
+          <select id="tf" onchange="fTbl()" style="width:140px;font-size:11px;padding:6px">
+            <option value="all">Tous</option><option value="m">Placés</option><option value="u">Non placés</option>
+          </select>
+        </div>
+        <div class="tw"><table class="rt"><thead><tr><th>#</th><th>Étudiant</th><th>Filière</th><th>Moyenne</th><th>Université attribuée</th><th>Vœu</th><th>Statut</th></tr></thead><tbody id="r-tb"></tbody></table></div>
+      </div>
+      <div class="card"><div class="ct">// Taux de remplissage</div><div class="cg" id="f-grid"></div></div>
+    </div>
+  </div>
+
+  <!-- ALL UNIS -->
+  <div id="tab-all" style="display:none">
+    <div class="card">
+      <div class="ct">// Toutes les universités partenaires CY Tech</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.8rem">
+        <div class="sb" style="flex:1;min-width:180px;margin:0"><span class="si">⌕</span><input id="as" placeholder="Rechercher..." oninput="rAT()"></div>
+        <select id="aspec" onchange="rAT()" style="width:170px;font-size:11px;padding:6px"><option value="">Toutes filières</option><option value="GI">Informatique</option><option value="MI">Maths-Info</option><option value="MF">Maths-Finance</option><option value="GC">Génie Civil</option><option value="BTC">Biotechnologie</option><option value="Design">Design</option></select>
+        <select id="areg" onchange="rAT()" style="width:150px;font-size:11px;padding:6px"><option value="">Toutes régions</option><option value="Europe">Europe</option><option value="Asie">Asie</option><option value="Canada">Canada</option><option value="UK/Irlande">UK/Irlande</option><option value="USA">USA</option><option value="Amérique Latine">Amérique Latine</option><option value="Afrique/MO">Afrique/MO</option><option value="Océanie">Océanie</option></select>
+        <select id="acost" onchange="rAT()" style="width:130px;font-size:11px;padding:6px"><option value="">Tous coûts</option><option value="0">Gratuit</option><option value="p">Payant</option></select>
+      </div>
+      <div style="font-size:9px;color:var(--mu);font-family:var(--fm);margin-bottom:.5rem" id="at-cnt"></div>
+      <div class="tw"><table class="rt" id="at"></table></div>
+    </div>
+  </div>
+
+  <!-- ALGO -->
+  <div id="tab-algo" style="display:none">
+    <div class="card">
+      <div class="ct">// Pourquoi ce système est meilleur</div>
+      <div class="al as">Algorithme de Gale-Shapley · Prix Nobel d'Économie 2012 (Alvin Roth & Lloyd Shapley)</div>
+      <div style="margin-top:1rem;font-size:12px;line-height:1.9">
+        <p><strong style="color:var(--ac)">Problème du système actuel :</strong> Les étudiants sont forcés de candidater sans résultats complets, sans visibilité sur les autres candidats, et avec seulement 4 vœux sur 200+ candidats. Résultat : des refus sur tous les vœux par manque d'information, pas par manque de mérite.</p>
+        <p style="margin-top:.8rem"><strong style="color:var(--ac)">Ce que fait l'algorithme :</strong> Chaque étudiant classe ses préférences honnêtement. L'algo attribue les places de façon optimale et stable. Si tu es évincé d'une université par quelqu'un avec une meilleure moyenne, tu passes automatiquement à ton vœu suivant. Pas besoin de jouer stratégiquement.</p>
+        <p style="margin-top:.8rem"><strong style="color:var(--ac)">Propriété fondamentale :</strong> Le résultat est stable — aucun étudiant ne peut améliorer sa situation en changeant ses vœux, et aucune université n'a un meilleur candidat non attribué.</p>
+        <p style="margin-top:.8rem"><strong style="color:var(--ac)">Implémentation :</strong> Données moyennes importées automatiquement depuis l'ENT. Interface web accessible à tous. 0 saisie manuelle. Transparent et vérifiable.</p>
+      </div>
+      <div style="margin-top:1.2rem;background:var(--s2);border-radius:9px;padding:1rem;font-family:var(--fm);font-size:10px;color:var(--mu);line-height:2">
+        <div style="color:var(--ac)"># Pseudo-code Gale-Shapley (version étudiants-proposants)</div>
+        <div>libre = tous les étudiants</div>
+        <div>tant que libre non vide :</div>
+        <div style="margin-left:1.5rem">s = libre.pop()</div>
+        <div style="margin-left:1.5rem">u = prochain vœu non tenté de s</div>
+        <div style="margin-left:1.5rem">si u a une place libre → accepter s</div>
+        <div style="margin-left:1.5rem">sinon si s.moy > pire_admis_dans_u.moy :</div>
+        <div style="margin-left:3rem">remplacer pire_admis par s</div>
+        <div style="margin-left:3rem">pire_admis retourne dans libre</div>
+        <div style="margin-left:1.5rem">sinon → s tente son vœu suivant</div>
+        <div style="margin-top:.5rem;color:var(--g)"># Complexité : O(n²) · stable pour 10 000+ étudiants</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const SPECS={GI:'Informatique',MI:'Maths-Info',MF:'Maths-Finance',GC:'Génie Civil',BTC:'Biotechnologie',Design:'Design'};
+const UNIS=[
+  {id:'polimi',n:'Politecnico di Milano',c:'Italie',r:'Europe',cap:2,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'metu',n:'METU – Ankara',c:'Turquie',r:'Europe',cap:4,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'charles',n:'Charles University Prague',c:'Rép. Tchèque',r:'Europe',cap:4,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'wroclaw',n:'Politechnika Wroclaw',c:'Pologne',r:'Europe',cap:2,cost:0,s:['GI','MI'],paid:false},
+  {id:'sdu',n:'SDU – Odense',c:'Danemark',r:'Europe',cap:4,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'vub',n:'VUB – Bruxelles',c:'Belgique',r:'Europe',cap:1,cost:0,s:['GI','BTC','GC'],paid:false},
+  {id:'tud',n:'TU Dresden',c:'Allemagne',r:'Europe',cap:2,cost:0,s:['GI'],paid:false},
+  {id:'regensburg',n:'Universität Regensburg',c:'Allemagne',r:'Europe',cap:1,cost:0,s:['GI'],paid:false},
+  {id:'reutlingen',n:'Reutlingen University',c:'Allemagne',r:'Europe',cap:3,cost:0,s:['GI','MI'],paid:false},
+  {id:'hft',n:'HFT Stuttgart',c:'Allemagne',r:'Europe',cap:4,cost:0,s:['GI','GC','Design','MI'],paid:false},
+  {id:'aueb',n:'AUEB – Athènes',c:'Grèce',r:'Europe',cap:4,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'bme',n:'BME Budapest',c:'Hongrie',r:'Europe',cap:1,cost:0,s:['GI','MI'],paid:false},
+  {id:'tartu',n:'University of Tartu',c:'Estonie',r:'Europe',cap:3,cost:0,s:['GI'],paid:false},
+  {id:'goteborg',n:'Univ. Gothenburg',c:'Suède',r:'Europe',cap:2,cost:0,s:['GI','BTC'],paid:false},
+  {id:'howest',n:'Howest',c:'Belgique',r:'Europe',cap:3,cost:0,s:['GI','Design'],paid:false},
+  {id:'hepl',n:'HEPL Liège',c:'Belgique',r:'Europe',cap:1,cost:0,s:['GI','GC','BTC'],paid:false},
+  {id:'avans',n:'AVANS',c:'Pays-Bas',r:'Europe',cap:3,cost:0,s:['GI'],paid:false},
+  {id:'tudelft_d',n:'TU Delft – Design',c:'Pays-Bas',r:'Europe',cap:2,cost:0,s:['Design'],paid:false},
+  {id:'cafoscari',n:"Ca' Foscari Venise",c:'Italie',r:'Europe',cap:4,cost:0,s:['GI'],paid:false},
+  {id:'iscte',n:'ISCTE – Lisbonne',c:'Portugal',r:'Europe',cap:2,cost:0,s:['GI','MI'],paid:false},
+  {id:'ulisboa_d',n:'Univ. Lisboa Design',c:'Portugal',r:'Europe',cap:3,cost:0,s:['Design'],paid:false},
+  {id:'lodz',n:'Lodz Univ. of Technology',c:'Pologne',r:'Europe',cap:2,cost:0,s:['GI'],paid:false},
+  {id:'wroclaw_a',n:'ASP Warszawa Design',c:'Pologne',r:'Europe',cap:2,cost:0,s:['Design'],paid:false},
+  {id:'kazimierz',n:'Kazimierz Pulaski Radom',c:'Pologne',r:'Europe',cap:2,cost:0,s:['GI','MI','MF','GC','BTC'],paid:false},
+  {id:'tuke',n:'TUKE – Košice',c:'Slovaquie',r:'Europe',cap:5,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'ljubljana',n:'Univ. Ljubljana',c:'Slovénie',r:'Europe',cap:2,cost:0,s:['GI','GC','BTC','Design'],paid:false},
+  {id:'sofia',n:'Université de Sofia',c:'Bulgarie',r:'Europe',cap:3,cost:0,s:['GI','MI'],paid:false},
+  {id:'algebra',n:'Algebra University Zagreb',c:'Croatie',r:'Europe',cap:2,cost:0,s:['GI','MI'],paid:false},
+  {id:'rijeka',n:'University of Rijeka',c:'Croatie',r:'Europe',cap:4,cost:0,s:['MI'],paid:false},
+  {id:'bahcesehir',n:'Bahcesehir Istanbul',c:'Turquie',r:'Europe',cap:4,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'alanya',n:'Alanya Universitesi',c:'Turquie',r:'Europe',cap:5,cost:0,s:['GI','Design'],paid:false},
+  {id:'yeditepe',n:'Yeditepe Istanbul',c:'Turquie',r:'Europe',cap:2,cost:0,s:['GI','MI','MF','GC','BTC','Design'],paid:false},
+  {id:'itu',n:'Istanbul Technical Univ.',c:'Turquie',r:'Europe',cap:2,cost:0,s:['MI'],paid:false},
+  {id:'reykjavik',n:'Reykjavik University',c:'Islande',r:'Europe',cap:2,cost:0,s:['GI','MI'],paid:false,w:'IELTS 6.5'},
+  {id:'vgtu',n:'VGTU – Vilnius',c:'Lituanie',r:'Europe',cap:2,cost:0,s:['GI','MI'],paid:false},
+  {id:'craiova',n:'University of Craiova',c:'Roumanie',r:'Europe',cap:2,cost:0,s:['GI','MI','GC','BTC'],paid:false},
+  {id:'alba',n:'University of Alba Iulia',c:'Roumanie',r:'Europe',cap:4,cost:0,s:['GI','MI'],paid:false},
+  {id:'singidunum',n:'Singidunum Belgrade',c:'Serbie',r:'Europe',cap:2,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'ibu',n:'IBU Sarajevo',c:'Bosnie',r:'Europe',cap:5,cost:0,s:['GI','MI'],paid:false},
+  {id:'umt_al',n:'UMT Tirana',c:'Albanie',r:'Europe',cap:3,cost:0,s:['GI','GC','MF'],paid:false},
+  {id:'luarasi',n:'Luarasi University',c:'Albanie',r:'Europe',cap:3,cost:0,s:['GI'],paid:false},
+  {id:'mitrovica',n:'Univ. Mitrovica Kosovo',c:'Kosovo',r:'Europe',cap:2,cost:0,s:['GI','MI','MF','GC'],paid:false},
+  {id:'politehnica',n:'Politehnica Bucharest',c:'Roumanie',r:'Europe',cap:4,cost:0,s:['GI'],paid:false},
+  {id:'tampere',n:'Tampere University',c:'Finlande',r:'Europe',cap:4,cost:0,s:['BTC'],paid:false},
+  {id:'lsb',n:'LSB Luxembourg',c:'Luxembourg',r:'Europe',cap:2,cost:0,s:['MF'],paid:false},
+  {id:'adriatic',n:'Univ. Adriatic Bar',c:'Monténégro',r:'Europe',cap:5,cost:0,s:['MF'],paid:false},
+  {id:'uliege',n:'Université de Liège',c:'Belgique',r:'Europe',cap:4,cost:0,s:['GC','BTC'],paid:false},
+  {id:'nova',n:'Univ. Nova de Lisboa',c:'Portugal',r:'Europe',cap:2,cost:0,s:['BTC'],paid:false},
+  {id:'minho',n:'Univ. do Minho',c:'Portugal',r:'Europe',cap:4,cost:0,s:['BTC','GC'],paid:false},
+  {id:'sevilla',n:'Universidad de Sevilla',c:'Espagne',r:'Europe',cap:4,cost:0,s:['MI'],paid:false,w:'Espagnol'},
+  {id:'ulpgc',n:'ULPGC Gran Canaria',c:'Espagne',r:'Europe',cap:2,cost:0,s:['GI'],paid:false,w:'Espagnol'},
+  {id:'upf',n:'UPF Barcelone',c:'Espagne',r:'Europe',cap:1,cost:0,s:['GI','MI'],paid:false,w:'Espagnol'},
+  {id:'ujaen',n:'Universidad de Jaén',c:'Espagne',r:'Europe',cap:4,cost:0,s:['GI'],paid:false,w:'Espagnol'},
+  {id:'uab',n:'UAB Barcelone',c:'Espagne',r:'Europe',cap:4,cost:0,s:['BTC'],paid:false,w:'Espagnol'},
+  {id:'uco',n:'Universidad de Córdoba',c:'Espagne',r:'Europe',cap:4,cost:0,s:['BTC'],paid:false,w:'Espagnol'},
+  {id:'ua_es',n:'Universidad de Alicante',c:'Espagne',r:'Europe',cap:3,cost:0,s:['BTC'],paid:false,w:'Espagnol'},
+  {id:'uab_bio',n:'UAB Barcelone Bio',c:'Espagne',r:'Europe',cap:4,cost:0,s:['BTC'],paid:false,w:'Espagnol'},
+  // Italie autres
+  {id:'napoli',n:'Federico II Napoli',c:'Italie',r:'Europe',cap:4,cost:0,s:['BTC'],paid:false},
+  {id:'bologna_d',n:'Univ. Bologna Design',c:'Italie',r:'Europe',cap:2,cost:0,s:['Design','GC'],paid:false},
+  {id:'padova',n:'Université de Padoue GC',c:'Italie',r:'Europe',cap:2,cost:0,s:['GC'],paid:false},
+  {id:'pisa',n:'Université de Pise',c:'Italie',r:'Europe',cap:2,cost:0,s:['BTC'],paid:false},
+  {id:'chieti',n:'Chieti Pescara',c:'Italie',r:'Europe',cap:2,cost:0,s:['Design','GC'],paid:false},
+  // ASIE
+  {id:'keio',n:'Keio University Tokyo',c:'Japon',r:'Asie',cap:4,cost:0,s:['GI'],paid:false},
+  {id:'kyutech',n:'Kyutech Kitakyushu',c:'Japon',r:'Asie',cap:2,cost:0,s:['GI'],paid:false},
+  {id:'chiba',n:'Chiba University GC',c:'Japon',r:'Asie',cap:2,cost:0,s:['GC'],paid:false},
+  {id:'hanyang',n:'Hanyang University',c:'Corée du Sud',r:'Asie',cap:5,cost:0,s:['GI','MI'],paid:false},
+  {id:'knu',n:'KNU Daegu',c:'Corée du Sud',r:'Asie',cap:2,cost:0,s:['GI'],paid:false},
+  {id:'ajou',n:'Ajou University',c:'Corée du Sud',r:'Asie',cap:5,cost:0,s:['GI'],paid:false},
+  {id:'snu',n:'SNU Séoul',c:'Corée du Sud',r:'Asie',cap:4,cost:0,s:['BTC','GC'],paid:false},
+  {id:'pusan',n:'Pusan University',c:'Corée du Sud',r:'Asie',cap:8,cost:0,s:['BTC','GC'],paid:false},
+  {id:'kookmin',n:'Kookmin Design',c:'Corée du Sud',r:'Asie',cap:3,cost:0,s:['Design'],paid:false},
+  {id:'dongseo',n:'Dongseo Design',c:'Corée du Sud',r:'Asie',cap:3,cost:0,s:['Design'],paid:false},
+  {id:'sookmyung',n:"Sookmyung Women's",c:'Corée du Sud',r:'Asie',cap:4,cost:0,s:['Design'],paid:false},
+  {id:'myongji',n:'Myongji University',c:'Corée du Sud',r:'Asie',cap:4,cost:0,s:['GI'],paid:false,w:'Cours en coréen'},
+  {id:'nycu',n:'NYCU Hsinchu',c:'Taïwan',r:'Asie',cap:4,cost:0,s:['GI','MI','BTC','GC'],paid:false},
+  {id:'ntust',n:'NTUST Taipei',c:'Taïwan',r:'Asie',cap:4,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'xjtlu',n:'XJTLU Suzhou',c:'Chine',r:'Asie',cap:3,cost:0,s:['GI','MI','MF','GC','BTC','Design'],paid:false},
+  {id:'neu',n:'Northeastern Univ. Shenyang',c:'Chine',r:'Asie',cap:5,cost:0,s:['GI','GC'],paid:false},
+  {id:'usst',n:'USST Shanghai',c:'Chine',r:'Asie',cap:5,cost:0,s:['GI','MI','MF','BTC','GC','Design'],paid:false},
+  {id:'cqu',n:'Chongqing University',c:'Chine',r:'Asie',cap:12,cost:0,s:['BTC','GC'],paid:false},
+  {id:'iitindore',n:'IIT Indore',c:'Inde',r:'Asie',cap:4,cost:0,s:['GI'],paid:false},
+  {id:'bkbiet',n:'BKBIET',c:'Inde',r:'Asie',cap:4,cost:0,s:['GI','MI'],paid:false},
+  {id:'kiit',n:'KIIT Bhubaneswar',c:'Inde',r:'Asie',cap:5,cost:0,s:['GI','MI','MF','GC','BTC','Design'],paid:false},
+  {id:'lpu',n:'LPU Punjab',c:'Inde',r:'Asie',cap:5,cost:0,s:['GI','MF','BTC','GC','Design'],paid:false},
+  {id:'rku',n:'RKU',c:'Inde',r:'Asie',cap:5,cost:0,s:['GI','MF','BTC','Design'],paid:false},
+  {id:'presidency',n:'Presidency University',c:'Inde',r:'Asie',cap:5,cost:0,s:['GI','MF','Design'],paid:false},
+  {id:'vmrf',n:'VMRF',c:'Inde',r:'Asie',cap:5,cost:0,s:['GI','MI','MF','GC','BTC','Design'],paid:false},
+  {id:'thammasat',n:'Thammasat SIIT',c:'Thaïlande',r:'Asie',cap:2,cost:0,s:['GI'],paid:false,w:'Sélection N+i'},
+  {id:'kasetsart',n:'Kasetsart Bangkok',c:'Thaïlande',r:'Asie',cap:5,cost:0,s:['GI','MI','BTC','GC'],paid:false},
+  {id:'chiangmai',n:'Chiang Mai University',c:'Thaïlande',r:'Asie',cap:4,cost:0,s:['BTC','GC'],paid:false},
+  {id:'usth',n:'USTH Hanoï',c:'Vietnam',r:'Asie',cap:3,cost:0,s:['GI','BTC'],paid:false},
+  {id:'hutech',n:'HUTECH Ho Chi Minh',c:'Vietnam',r:'Asie',cap:2,cost:0,s:['MI'],paid:false},
+  {id:'inpt',n:'INPT Rabat',c:'Maroc',r:'Afrique/MO',cap:4,cost:0,s:['GI'],paid:false},
+  {id:'uir',n:'UIR Rabat',c:'Maroc',r:'Afrique/MO',cap:2,cost:0,s:['GI','MI','GC','BTC'],paid:false},
+  {id:'ngu',n:'NGU New Giza',c:'Égypte',r:'Afrique/MO',cap:5,cost:0,s:['GI','MI','MF','GC','BTC','Design'],paid:false},
+  {id:'alexandria',n:'Alexandria University',c:'Égypte',r:'Afrique/MO',cap:5,cost:0,s:['GI','MI','MF','GC','BTC'],paid:false},
+  {id:'ufe',n:'UFE Univ. Française Égypte',c:'Égypte',r:'Afrique/MO',cap:5,cost:0,s:['GI','MI','MF'],paid:false},
+  {id:'esiac',n:'ESIAC Cameroun',c:'Cameroun',r:'Afrique/MO',cap:5,cost:0,s:['GI','MF','BTC','GC'],paid:false},
+  {id:'insat',n:'INSAT Tunis',c:'Tunisie',r:'Afrique/MO',cap:3,cost:0,s:['GI'],paid:false},
+  {id:'esprit',n:'Esprit Tunis',c:'Tunisie',r:'Afrique/MO',cap:2,cost:0,s:['GI'],paid:false},
+  {id:'sesame',n:'Sésame Tunis',c:'Tunisie',r:'Afrique/MO',cap:4,cost:0,s:['GI'],paid:false},
+  {id:'pi_tn',n:'Groupe Polytech Intl',c:'Tunisie',r:'Afrique/MO',cap:2,cost:0,s:['GI','MF','Design'],paid:false},
+  // Amérique Latine
+  {id:'inteli',n:'Inteli São Paulo',c:'Brésil',r:'Amérique Latine',cap:5,cost:0,s:['GI'],paid:false},
+  {id:'unesp',n:'UNESP',c:'Brésil',r:'Amérique Latine',cap:2,cost:0,s:['GI','MI'],paid:false,w:'Portugais'},
+  {id:'ufmg',n:'UFMG Minas Gerais',c:'Brésil',r:'Amérique Latine',cap:4,cost:0,s:['GI','MI','MF','GC','BTC','Design'],paid:false},
+  {id:'ufsc',n:'UFSC Santa Catarina',c:'Brésil',r:'Amérique Latine',cap:5,cost:0,s:['GI','MI','GC','BTC','Design'],paid:false},
+  {id:'eia',n:'EIA Medellín',c:'Colombie',r:'Amérique Latine',cap:6,cost:0,s:['GI'],paid:false,w:'Espagnol B1/B2'},
+  {id:'unnoba',n:'UNNOBA Buenos Aires',c:'Argentine',r:'Amérique Latine',cap:2,cost:0,s:['GI','MF'],paid:false,w:'Espagnol'},
+  {id:'unlp',n:'UNLP La Plata',c:'Argentine',r:'Amérique Latine',cap:2,cost:0,s:['GI'],paid:false,w:'Espagnol'},
+  {id:'uandes',n:'Univ. de los Andes Santiago',c:'Chili',r:'Amérique Latine',cap:4,cost:0,s:['GI','BTC','GC'],paid:false,w:'Espagnol B2'},
+  {id:'tec_mty',n:'Tec de Monterrey',c:'Mexique',r:'Amérique Latine',cap:2,cost:0,s:['GI'],paid:false,w:'Espagnol'},
+  {id:'iteso',n:'ITESO Guadalajara',c:'Mexique',r:'Amérique Latine',cap:2,cost:0,s:['GI'],paid:false,w:'Espagnol'},
+  {id:'udg',n:'Univ. de Guadalajara',c:'Mexique',r:'Amérique Latine',cap:2,cost:0,s:['GI'],paid:false,w:'Espagnol'},
+  {id:'uady',n:'UADY Yucatan',c:'Mexique',r:'Amérique Latine',cap:2,cost:0,s:['GI'],paid:false,w:'Espagnol'},
+  {id:'ulima',n:'Univ. de Lima',c:'Pérou',r:'Amérique Latine',cap:2,cost:0,s:['GI','MF','GC'],paid:false,w:'Espagnol'},
+  // Canada
+  {id:'ets',n:'ETS Montréal',c:'Canada',r:'Canada',cap:2,cost:0,s:['GI'],paid:false,w:'2e sem.'},
+  {id:'uqac',n:'UQAC Chicoutimi',c:'Canada',r:'Canada',cap:7,cost:0,s:['GI','MI','GC','BTC'],paid:false,w:'2e sem. + 500$CAD'},
+  {id:'udem',n:'Université de Montréal',c:'Canada',r:'Canada',cap:3,cost:0,s:['MF'],paid:false,w:'2e sem.'},
+  {id:'uqam',n:'UQAM',c:'Canada',r:'Canada',cap:2,cost:0,s:['Design'],paid:false},
+  {id:'concordia',n:'Concordia Montréal',c:'Canada',r:'Canada',cap:30,cost:12000,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  // UK/Irlande
+  {id:'heriot',n:'Heriot-Watt',c:'Ecosse/Malaisie',r:'UK/Irlande',cap:10,cost:0,s:['GI','MI','MF','GC','BTC','Design'],paid:false},
+  {id:'griffith',n:'Griffith College Dublin',c:'Irlande',r:'UK/Irlande',cap:30,cost:2700,s:['GI','MI'],paid:true,ul:true},
+  {id:'dbs',n:'Dublin Business School',c:'Irlande',r:'UK/Irlande',cap:30,cost:2750,s:['GI','MF'],paid:true,ul:true},
+  {id:'herts',n:'Hertfordshire London',c:'Grande-Bretagne',r:'UK/Irlande',cap:30,cost:8500,s:['MF','Design','GC'],paid:true,ul:true},
+  {id:'brunel',n:'Brunel University London',c:'Grande-Bretagne',r:'UK/Irlande',cap:30,cost:9000,s:['GI','MF','Design','BTC'],paid:true,ul:true},
+  {id:'glasgow',n:'Univ. Glasgow',c:'Grande-Bretagne',r:'UK/Irlande',cap:30,cost:12000,s:['GI','MF'],paid:true,ul:true},
+  {id:'acd_ie',n:'American College Dublin',c:'Irlande',r:'UK/Irlande',cap:30,cost:2890,s:['MF'],paid:true,ul:true},
+  // USA
+  {id:'csulb',n:'CSULB Long Beach',c:'USA',r:'USA',cap:30,cost:6500,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'sfsu',n:'SFSU San Francisco',c:'USA',r:'USA',cap:30,cost:6600,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'ucsc',n:'UCSC Silicon Valley',c:'USA',r:'USA',cap:30,cost:5700,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'ucla',n:'UCLA Extension',c:'USA',r:'USA',cap:30,cost:6200,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'ucsd',n:'UC San Diego',c:'USA',r:'USA',cap:30,cost:6000,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'ohio',n:'Ohio State Design',c:'USA',r:'USA',cap:2,cost:0,s:['Design'],paid:false},
+  // Océanie
+  {id:'rmit_mel',n:'RMIT Melbourne',c:'Australie',r:'Océanie',cap:30,cost:12000,s:['GI','GC','Design'],paid:true,ul:true},
+  {id:'monash_mel',n:'Monash Melbourne',c:'Australie',r:'Océanie',cap:30,cost:13000,s:['GI','GC','Design'],paid:true,ul:true},
+  {id:'wollongong',n:'Univ. Wollongong',c:'Australie',r:'Océanie',cap:30,cost:10000,s:['GI','GC'],paid:true,ul:true},
+  {id:'swinburne',n:'Swinburne Melbourne',c:'Australie',r:'Océanie',cap:30,cost:11500,s:['GI','Design'],paid:true,ul:true},
+  {id:'uts',n:'UTS Sydney',c:'Australie',r:'Océanie',cap:30,cost:11000,s:['GI','Design'],paid:true,ul:true},
+  {id:'jcu_au',n:'James Cook Cairns',c:'Australie',r:'Océanie',cap:30,cost:11000,s:['BTC','GC'],paid:true,ul:true},
+  {id:'aut',n:'AUT Auckland',c:'Nouvelle-Zélande',r:'Océanie',cap:30,cost:9000,s:['GC','Design'],paid:true,ul:true},
+  // Payants Asia Exchange
+  {id:'konkuk',n:'Konkuk Univ. (Asia Exch.)',c:'Corée du Sud',r:'Asie',cap:30,cost:2650,s:['GI','BTC'],paid:true,ul:true},
+  {id:'walailak',n:'Walailak (Asia Exch.)',c:'Thaïlande',r:'Asie',cap:30,cost:2190,s:['GI','MF','Design'],paid:true,ul:true},
+  {id:'upm_ae',n:'Univ. Putra Malaysia (Asia Exch.)',c:'Malaisie',r:'Asie',cap:30,cost:2290,s:['GI','MF','GC','Design'],paid:true,ul:true},
+  {id:'kasetsart_ae',n:'Kasetsart (Asia Exch.)',c:'Thaïlande',r:'Asie',cap:30,cost:2650,s:['GI','BTC'],paid:true,ul:true},
+  {id:'temple_jp',n:'Temple Univ. Japan (Asia Exch.)',c:'Japon',r:'Asie',cap:30,cost:4600,s:['GI'],paid:true,ul:true},
+  {id:'atma',n:'Atma Jaya Jakarta (Asia Exch.)',c:'Indonésie',r:'Asie',cap:30,cost:2290,s:['GI','BTC'],paid:true,ul:true},
+  {id:'sliit',n:'SLIIT Sri Lanka (Asia Exch.)',c:'Sri Lanka',r:'Asie',cap:30,cost:2390,s:['BTC','Design'],paid:true,ul:true},
+  // Payants Studies Up
+  {id:'endicott',n:'Endicott College (Studies Up)',c:'Corée du Sud',r:'Asie',cap:30,cost:2850,s:['GI'],paid:true,ul:true},
+  {id:'solbridge',n:'Solbridge (Studies Up)',c:'Corée du Sud',r:'Asie',cap:30,cost:4500,s:['MF'],paid:true,ul:true},
+  {id:'monash_kl',n:'Monash KL (Studies Up)',c:'Malaisie',r:'Asie',cap:30,cost:4500,s:['GI','BTC','GC'],paid:true,ul:true},
+  {id:'swinburne_sr',n:'Swinburne Sarawak (Studies Up)',c:'Malaisie',r:'Asie',cap:30,cost:5000,s:['GI','Design'],paid:true,ul:true},
+  {id:'jcu_sg',n:'James Cook Singapour (Studies Up)',c:'Singapour',r:'Asie',cap:30,cost:7000,s:['GI','MI','BTC'],paid:true,ul:true},
+  {id:'ecu_sl',n:'ECU Sri Lanka (Studies Up)',c:'Sri Lanka',r:'Asie',cap:30,cost:4000,s:['GI','Design'],paid:true,ul:true},
+  {id:'rmit_vn',n:'RMIT Vietnam (Studies Up)',c:'Vietnam',r:'Asie',cap:30,cost:4750,s:['GI','GC','Design'],paid:true,ul:true},
+  {id:'wollongong_dxb',n:'Wollongong Dubai (Studies Up)',c:'Émirats',r:'Asie',cap:30,cost:9000,s:['GI','GC','Design'],paid:true,ul:true},
+  {id:'zust',n:'ZUST Chine',c:'Chine',r:'Asie',cap:5,cost:1200,s:['GI','GC'],paid:true},
+];
+
+const REGS=['Toutes','Europe','Asie','Canada','UK/Irlande','USA','Amérique Latine','Afrique/MO','Océanie'];
+let aR='Toutes', aCost='Toutes';
+let myRk=[], others=[], lastRows=[];
+
+// SPLASH
+function closeSplash(){document.getElementById('splash').style.display='none';document.getElementById('main').style.display='block';regen();}
+
+function updDisp(){
+  const n=document.getElementById('s-name').value||'—';
+  const sp=document.getElementById('s-spec').value;
+  const ca=document.getElementById('s-campus').value;
+  document.getElementById('disp-name').textContent=n;
+  document.getElementById('disp-spec').textContent=SPECS[sp];
+  document.getElementById('disp-campus').textContent=ca;
+  document.getElementById('disp-avg').textContent=parseFloat(document.getElementById('s-avg').value).toFixed(1)+' / 20';
+  document.getElementById('disp-ue').textContent='S1 validé sans rattrapage';
+}
+
+function avgUpd(v){
+  const f=parseFloat(v).toFixed(1);
+  document.getElementById('avg-v').textContent=f;
+  document.getElementById('avg-d').textContent=f+' / 20';
+  document.getElementById('disp-avg').textContent=f+' / 20';
+  drawDist();
+}
+
+function showTab(t){
+  ['setup','rank','sim','all','algo'].forEach(id=>document.getElementById('tab-'+id).style.display=id===t?'block':'none');
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['setup','rank','sim','all','algo'][i]===t));
+  if(t==='rank')renderUL();
+  if(t==='sim')runSim();
+  if(t==='all')rAT();
+}
+
+function regen(){
+  const names=['Alice M.','Baptiste L.','Camille D.','Damien F.','Emma R.','Florian T.','Gabriel P.','Hugo B.','Inès C.','Jules N.','Karim A.','Laura S.','Martin V.','Nadia O.','Omar K.','Pauline J.','Quentin H.','Rania Z.','Sébastien L.','Tina W.','Ugo B.','Valeria F.','William C.','Xavier M.','Yasmine N.','Zakaria B.','Anaïs T.','Boris G.','Céline R.','Dylan M.','Elisa F.','Franck B.','Giulia R.','Hassan M.','Ilona S.','Jonas P.','Kenza A.','Leo C.','Mia K.','Nathan B.','Olivia T.','Pierre D.','Quinn H.','Rosa M.','Sam W.','Théo L.','Uma K.','Victor P.','Wendy S.','Youssef A.','Zara H.','Aaron B.','Bianca L.','Chris M.','Diana F.','Ethan R.','Fiona T.','George P.','Hannah B.','Ivan C.','Julia N.','Karl O.','Lena K.','Marco V.','Nina O.','Oscar K.','Petra J.','Rafael H.','Sara Z.','Tom L.','Vadim F.','Wera C.','Xander M.','Yara N.','Zoe B.','Adam T.','Bella G.','Carlos R.','Dana L.','Edwin M.','Fatou N.','Gael O.','Helen K.','Iban A.','Jade Z.','Kevin B.','Lily F.','Max P.','Nora J.','Otto H.','Pia L.','Quan M.','Reem S.','Stefan L.','Tamar W.','Ulrich C.','Vera M.','Wolf B.','Xia R.','Yves N.','Zena K.','Abel L.','Bea F.','Cyril M.','Dora R.','Elan B.','Fara T.','Glen P.','Hana B.','Iris C.','Johan N.','Kira O.','Luc K.','Maya V.','Nikos O.','Oxana K.','Peri J.','Rai H.','Sana Z.','Tim L.','Ula B.','Val F.','Win C.','Xel M.','Ylan N.','Zita B.','Aron T.','Beta G.','Cruz R.','Dali L.','Edna M.','Femi N.','Gina O.','Hiro K.','Ines A.','Jae Z.','Kobe B.','Luna F.','Manu P.','Nova J.','Oskar H.','Ryo M.','Seo S.','Tai L.','Umi W.','Via C.','Wei M.','Xiu B.','Yan R.','Zo K.','Agi L.','Bao F.','Cai M.','Dan R.','Eli B.','Fay T.','Gio P.','Han B.','Isa C.','Jan N.','Kim O.','Lui K.','Mio V.','Nan O.','Ola K.','Pat J.','Rio H.','Sol Z.','Tan L.','Uta B.','Vin F.','Wil C.','Xu M.','Yun N.','Zia B.','Ami T.','Bui G.','Chi R.','Dun L.','Ero M.','Fia N.','Guo O.','Hui K.','Jil Z.','Kol B.','Lea F.','Mei P.','Nil J.','Oti H.','Pua L.','Que M.','Ruo S.','Shi L.','Tao W.','Van M.','Wai B.','Xan R.','Yol K.'];
+  const allSpecs=Object.keys(SPECS);
+  others=[];
+  for(let i=0;i<199;i++){
+    const name=names[i%names.length]+(i>=names.length?' '+(Math.floor(i/names.length)+2):'');
+    let avg;const ro=Math.random();
+    if(ro<.08)avg=6+Math.random()*2;
+    else if(ro<.25)avg=9+Math.random()*2;
+    else if(ro<.65)avg=11+Math.random()*4;
+    else if(ro<.88)avg=15+Math.random()*2.5;
+    else avg=17.5+Math.random()*2;
+    avg=Math.round(Math.min(20,Math.max(5,avg))*10)/10;
+    const spec=allSpecs[Math.floor(Math.random()*allSpecs.length)];
+    // Realistic prefs: mix of good and bad unis, not just top ones
+    const avail=UNIS.filter(u=>u.s.includes(spec));
+    const shuffled=[...avail].sort(()=>Math.random()-.5);
+    // Bias slightly toward lower-cap unis but keep it random
+    const prefs=shuffled.slice(0,3+Math.floor(Math.random()*10));
+    others.push({name,avg,prefs,spec,isMe:false,nextPref:0,currentMatch:null});
+  }
+  document.getElementById('s-cnt').textContent='199 candidats générés';
+  updDisp();drawDist();
+}
+
+function drawDist(){
+  const canvas=document.getElementById('dist');
+  if(!canvas||!others.length)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.parentElement.offsetWidth||600;canvas.height=100;
+  const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+  const bins=Array(16).fill(0);
+  const myAvg=parseFloat(document.getElementById('s-avg').value);
+  others.forEach(s=>{const b=Math.min(15,Math.floor(s.avg-5));if(b>=0)bins[b]++;});
+  const max=Math.max(...bins)||1;const bw=(w-40)/16;
+  bins.forEach((c,i)=>{
+    const x=20+i*bw,bh=(c/max)*(h-22);
+    const thisAvg=5+i;
+    ctx.fillStyle=(thisAvg<=myAvg&&thisAvg>myAvg-1)?'rgba(108,99,255,.85)':'rgba(108,99,255,.28)';
+    ctx.fillRect(x,h-18-bh,bw-2,bh);
+    if(i%3===0){ctx.fillStyle='#6b6b8a';ctx.font='9px Space Mono';ctx.textAlign='center';ctx.fillText(thisAvg,x+bw/2,h-3);}
+  });
+  const mx=20+(myAvg-5)/16*(w-40);
+  ctx.strokeStyle='#ff6584';ctx.lineWidth=1.5;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(mx,0);ctx.lineTo(mx,h-18);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#ff6584';ctx.font='bold 9px Space Mono';ctx.textAlign='center';ctx.fillText('toi',mx,9);
+  const below=others.filter(s=>s.avg<myAvg).length;
+  document.getElementById('dist-i').textContent=`Devant ${below}/199 candidats — top ${Math.round((1-below/199)*100)}% · ${UNIS.length} universités · ${UNIS.reduce((a,u)=>a+u.cap,0)} places totales`;
+}
+
+function setR(r){aR=r;document.querySelectorAll('#rfilt .fb').forEach(b=>b.classList.toggle('on',b.dataset.v===r));renderUL();}
+function setCost(c){aCost=c;document.querySelectorAll('#cfilt .fb').forEach(b=>b.classList.toggle('on',b.dataset.v===c));renderUL();}
+
+function renderUL(){
+  const rfilt=document.getElementById('rfilt');
+  const cfilt=document.getElementById('cfilt');
+  const mySpec=document.getElementById('s-spec').value;
+  if(!rfilt.children.length){
+    REGS.forEach(r=>{const b=document.createElement('button');b.className='fb'+(r===aR?' on':'');b.textContent=r;b.dataset.v=r;b.onclick=()=>setR(r);rfilt.appendChild(b);});
+    ['Toutes','Gratuit','Payant'].forEach(c=>{const b=document.createElement('button');b.className='fb'+(c===aCost?' on':'');b.textContent=c;b.dataset.v=c;b.onclick=()=>setCost(c);cfilt.appendChild(b);});
+  }
+  const q=(document.getElementById('u-s').value||'').toLowerCase();
+  const filtered=UNIS.filter(u=>{
+    const mr=aR==='Toutes'||u.r===aR;
+    const ms=u.s.includes(mySpec);
+    const mc=aCost==='Toutes'||(aCost==='Gratuit'&&u.cost===0)||(aCost==='Payant'&&u.cost>0);
+    const mq=!q||u.n.toLowerCase().includes(q)||u.c.toLowerCase().includes(q);
+    return mr&&ms&&mc&&mq;
+  });
+  document.getElementById('ul-cnt').textContent=filtered.length+' université'+(filtered.length>1?'s':'')+' pour '+SPECS[mySpec];
+  document.getElementById('ul').innerHTML=filtered.map(u=>{
+    const inRk=myRk.find(r=>r.id===u.id);const pos=inRk?myRk.indexOf(inRk)+1:null;
+    return`<div class="ui ${inRk?'sel':''}" onclick="toggleUni('${u.id}')">
+      <div style="flex:1;min-width:0">
+        <div class="un">${u.n}</div>
+        <div class="us">${u.c} · ${u.ul?'∞ places':u.cap+' place'+(u.cap>1?'s':'')}${u.w?' · ⚠ '+u.w:''}</div>
+      </div>
+      <div class="ubs">
+        <span class="bdg ${u.cost===0?'bf':'bp'}">${u.cost===0?'Gratuit':'~€'+u.cost}</span>
+        ${u.ul?'<span class="bdg bu">∞</span>':''}
+        ${pos?`<span class="bdg" style="background:rgba(108,99,255,.2);color:var(--ac)">V${pos}</span>`:''}
+      </div></div>`;
+  }).join('');
+}
+
+function toggleUni(id){
+  const u=UNIS.find(u=>u.id===id);
+  const idx=myRk.findIndex(r=>r.id===id);
+  if(idx>=0)myRk.splice(idx,1);else myRk.push(u);
+  renderRk();renderUL();
+}
+
+// DRAG AND DROP — clean implementation
+let dragSrcIdx=null;
+function onDragStart(e,idx){
+  dragSrcIdx=idx;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',idx);
+  setTimeout(()=>e.target.classList.add('dragging'),0);
+}
+function onDragOver(e,idx){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('.rk-item').forEach((el,i)=>el.classList.toggle('dragover',i===idx&&i!==dragSrcIdx));
+}
+function onDrop(e,idx){
+  e.preventDefault();
+  e.stopPropagation();
+  if(dragSrcIdx!==null&&dragSrcIdx!==idx){
+    const moved=myRk.splice(dragSrcIdx,1)[0];
+    myRk.splice(idx,0,moved);
+    dragSrcIdx=null;
+    renderRk();renderUL();
+  }
+}
+function onDragEnd(e){
+  dragSrcIdx=null;
+  document.querySelectorAll('.rk-item').forEach(el=>el.classList.remove('dragover','dragging'));
+}
+
+function clearRk(){myRk=[];renderRk();renderUL();}
+
+function renderRk(){
+  const el=document.getElementById('rk-list');
+  const empty=document.getElementById('rk-empty');
+  const act=document.getElementById('rk-act');
+  if(!myRk.length){empty.style.display='block';el.innerHTML='';act.style.display='none';return;}
+  empty.style.display='none';act.style.display='block';
+  document.getElementById('rk-tip').textContent=`✓ ${myRk.length} vœu${myRk.length>1?'x':''} — glisse pour réordonner, clique pour retirer.`;
+  el.innerHTML=myRk.map((u,i)=>`
+    <div class="rk-item" draggable="true"
+      ondragstart="onDragStart(event,${i})"
+      ondragover="onDragOver(event,${i})"
+      ondrop="onDrop(event,${i})"
+      ondragend="onDragEnd(event)">
+      <span class="drag-handle">⠿</span>
+      <div class="rk-num">${i+1}</div>
+      <div class="rk-info">
+        <div class="rk-name">${u.n}</div>
+        <div class="rk-sub">${u.c} · ${u.ul?'∞ places':u.cap+' place'+(u.cap>1?'s':'')}</div>
+      </div>
+      <button class="rk-rm" onclick="toggleUni('${u.id}')">✕</button>
+    </div>`).join('');
+}
+
+function galeShapley(){
+  const myAvg=parseFloat(document.getElementById('s-avg').value);
+  const myName=document.getElementById('s-name').value||'Moi';
+  const mySpec=document.getElementById('s-spec').value;
+  const students=[
+    {name:myName||'Moi',avg:myAvg,prefs:[...myRk],spec:mySpec,isMe:true,nextPref:0,currentMatch:null},
+    ...others.map(o=>({...o,prefs:[...o.prefs],nextPref:0,currentMatch:null}))
+  ];
+  const uniM={};UNIS.forEach(u=>{uniM[u.id]=[];});
+  const free=[...students];let it=0;
+  while(free.length&&it<200000){
+    it++;const s=free.shift();
+    if(s.nextPref>=s.prefs.length)continue;
+    const u=s.prefs[s.nextPref];s.nextPref++;
+    const uid=u.id;const cap=UNIS.find(x=>x.id===uid)?.cap||1;
+    if(!uniM[uid])uniM[uid]=[];
+    if(uniM[uid].length<cap){uniM[uid].push(s);s.currentMatch=uid;}
+    else{
+      const worst=[...uniM[uid]].sort((a,b)=>a.avg-b.avg)[0];
+      if(s.avg>worst.avg){uniM[uid]=uniM[uid].filter(x=>x!==worst);worst.currentMatch=null;uniM[uid].push(s);s.currentMatch=uid;if(worst.nextPref<worst.prefs.length)free.push(worst);}
+      else{if(s.nextPref<s.prefs.length)free.push(s);}
+    }
+  }
+  return{students,uniM};
+}
+
+function runSim(){
+  const ok=document.getElementById('sim-ok'),empty=document.getElementById('sim-empty');
+  if(!myRk.length){ok.style.display='none';empty.style.display='block';return;}
+  ok.style.display='block';empty.style.display='none';
+  const{students,uniM}=galeShapley();
+  const me=students.find(s=>s.isMe);
+  const matched=students.filter(s=>s.currentMatch);
+  const myAvg=parseFloat(document.getElementById('s-avg').value);
+  document.getElementById('sim-s').innerHTML=`
+    <div class="sb2"><div class="sl">Candidats</div><div class="sv sva">${students.length}</div></div>
+    <div class="sb2"><div class="sl">Placés</div><div class="sv svg">${matched.length}</div></div>
+    <div class="sb2"><div class="sl">Non placés</div><div class="sv svr">${students.length-matched.length}</div></div>
+    <div class="sb2"><div class="sl">Ta moyenne</div><div class="sv svy">${myAvg.toFixed(1)}/20</div></div>
+    <div class="sb2"><div class="sl">Universités</div><div class="sv sva">${UNIS.length}</div></div>
+    <div class="sb2"><div class="sl">Places totales</div><div class="sv sva">${UNIS.reduce((a,u)=>a+u.cap,0)}</div></div>
+  `;
+  const myU=me.currentMatch?UNIS.find(u=>u.id===me.currentMatch):null;
+  const myW=myU?myRk.findIndex(r=>r.id===me.currentMatch)+1:null;
+  document.getElementById('my-r').innerHTML=myU
+    ?`<div class="al as">✅ Accepté à <strong>${myU.n}</strong> (${myU.c}) — c'était ton vœu n°${myW}</div>`
+    :`<div class="al ar">⚠️ Aucun vœu attribué avec cette moyenne (${myAvg.toFixed(1)}/20). Ajoute plus de vœux ou des universités avec plus de places.</div>`;
+  const sorted=[...students].sort((a,b)=>b.avg-a.avg);
+  lastRows=sorted;fTbl();
+  const active=UNIS.filter(u=>(uniM[u.id]?.length||0)>0).sort((a,b)=>(uniM[b.id]?.length||0)-(uniM[a.id]?.length||0));
+  document.getElementById('f-grid').innerHTML=active.map(u=>{
+    const f=uniM[u.id]?.length||0;const pct=Math.min(100,(f/u.cap)*100);
+    return`<div class="ci"><div class="cin">${u.n}</div><div class="cbw"><div class="cb ${f>=u.cap?'full':''}" style="width:${pct}%"></div></div><div class="cn2">${f}/${u.ul?'∞':u.cap} · ${u.c}</div></div>`;
+  }).join('');
+}
+
+function fTbl(){
+  if(!lastRows.length)return;
+  const q=(document.getElementById('ts')?.value||'').toLowerCase();
+  const f=document.getElementById('tf')?.value||'all';
+  const rows=lastRows.filter(s=>{
+    const mq=!q||s.name.toLowerCase().includes(q)||(s.currentMatch&&UNIS.find(u=>u.id===s.currentMatch)?.n.toLowerCase().includes(q));
+    const mf=f==='all'||(f==='m'&&s.currentMatch)||(f==='u'&&!s.currentMatch);
+    return mq&&mf;
+  });
+  const col=avg=>avg>=16?'var(--g)':avg>=13?'var(--y)':'var(--r)';
+  document.getElementById('r-tb').innerHTML=rows.map(s=>{
+    const mU=s.currentMatch?UNIS.find(u=>u.id===s.currentMatch):null;
+    const w=mU?s.prefs.findIndex(p=>p.id===s.currentMatch)+1:null;
+    const rank=lastRows.indexOf(s)+1;
+    return`<tr class="${s.isMe?'yr':''}">
+      <td style="font-family:var(--fm);color:var(--mu)">${rank}</td>
+      <td style="font-weight:600">${s.name}${s.isMe?' <span style="font-size:8px;color:var(--ac);font-family:var(--fm)">[toi]</span>':''}</td>
+      <td style="font-size:9px;color:var(--mu);font-family:var(--fm)">${SPECS[s.spec]||s.spec}</td>
+      <td style="font-family:var(--fm);color:${col(s.avg)}">${s.avg.toFixed(1)}</td>
+      <td>${mU?mU.n+' <span style="font-size:9px;color:var(--mu)">('+mU.c+')</span>':'<span style="color:var(--mu)">—</span>'}</td>
+      <td style="font-family:var(--fm);color:var(--mu)">${w?'V'+w:'—'}</td>
+      <td>${s.currentMatch?'<span class="pill pok">✓</span>':'<span class="pill pno">✗</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function rAT(){
+  const q=(document.getElementById('as')?.value||'').toLowerCase();
+  const sp=document.getElementById('aspec')?.value||'';
+  const rg=document.getElementById('areg')?.value||'';
+  const co=document.getElementById('acost')?.value||'';
+  const f=UNIS.filter(u=>(!q||u.n.toLowerCase().includes(q)||u.c.toLowerCase().includes(q))&&(!sp||u.s.includes(sp))&&(!rg||u.r===rg)&&(co===''||(co==='0'&&u.cost===0)||(co==='p'&&u.cost>0)));
+  document.getElementById('at-cnt').textContent=f.length+' université'+(f.length>1?'s':'')+' sur '+UNIS.length+' total';
+  document.getElementById('at').innerHTML=`<thead><tr><th>Université</th><th>Pays</th><th>Région</th><th>Filières</th><th>Places</th><th>Coût</th></tr></thead><tbody>${
+    f.map(u=>`<tr>
+      <td style="font-weight:600">${u.n}${u.w?` <span style="font-size:9px;color:var(--y)">⚠ ${u.w}</span>`:''}</td>
+      <td style="color:var(--mu);font-size:10px">${u.c}</td>
+      <td style="color:var(--mu);font-family:var(--fm);font-size:9px">${u.r}</td>
+      <td style="font-size:9px">${u.s.map(x=>`<span class="bdg" style="background:rgba(108,99,255,.1);color:var(--ac);margin:1px">${x}</span>`).join('')}</td>
+      <td style="font-family:var(--fm)">${u.ul?`<span style="color:var(--r)">∞</span>`:u.cap}</td>
+      <td style="font-family:var(--fm)">${u.cost===0?`<span style="color:var(--g)">Gratuit</span>`:`<span style="color:var(--y)">~€${u.cost}</span>`}</td>
+    </tr>`).join('')
+  }</tbody>`;
+}
+</script>
+</body>
+</html>
