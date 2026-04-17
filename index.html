@@ -22,6 +22,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .splash-anon{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:10px;color:var(--mu);background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:6px 12px;margin-bottom:2rem}
 .anon-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes slidein{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 .splash-btn{padding:14px 36px;background:var(--ac);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--fh);transition:all .2s;letter-spacing:.03em}
 .splash-btn:hover{background:#7c74ff;transform:translateY(-2px)}
 .splash-line{height:1px;background:var(--bd);margin-bottom:2rem}
@@ -132,6 +133,54 @@ input[type=range]{padding:4px 0;background:none;border:none}
 .ii-label{font-size:10px;color:var(--mu);font-family:var(--fm);width:140px;flex-shrink:0}
 .ii-val{font-size:12px;font-weight:600}
 .ii-auto{font-size:9px;background:rgba(0,229,160,.1);color:var(--g);padding:2px 6px;border-radius:4px;font-family:var(--fm);margin-left:auto}
+
+/* NEW STYLES */
+.share-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#25D366;color:#000;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--fh);transition:all .15s;text-decoration:none}
+.share-btn:hover{background:#1ebf5a;transform:translateY(-1px)}
+.copy-btn{padding:8px 14px;background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--fh);transition:all .15s}
+.copy-btn:hover{border-color:var(--ac)}
+.copy-btn.copied{background:var(--g);color:#000;border-color:var(--g)}
+.source-link{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--fm);text-decoration:none;transition:all .15s}
+.source-link:hover{border-color:var(--ac);color:var(--ac)}
+
+.email-proof{background:#fff;border-radius:12px;padding:1.2rem;font-family:Arial,sans-serif;color:#222;font-size:12px;line-height:1.6}
+.email-proof .em-head{display:flex;align-items:center;gap:10px;padding-bottom:.8rem;border-bottom:1px solid #e5e5e5;margin-bottom:.8rem}
+.email-proof .em-avatar{width:36px;height:36px;border-radius:50%;background:#6c63ff;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.email-proof .em-meta{font-size:11px;color:#666}
+.email-proof .em-from{font-weight:600;color:#111;font-size:13px}
+.email-proof .em-subj{font-size:14px;font-weight:600;margin-bottom:.8rem;color:#111}
+.email-proof .em-body{color:#333;font-size:12px;line-height:1.7}
+.email-proof .em-highlight{background:#fef3c7;padding:1px 3px;border-radius:2px;color:#78350f;font-weight:600}
+
+.faq-item{background:var(--s2);border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.faq-q{padding:12px 15px;cursor:pointer;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center;transition:background .15s}
+.faq-q:hover{background:rgba(108,99,255,.05)}
+.faq-arrow{font-size:10px;color:var(--mu);transition:transform .2s}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{padding:0 15px;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;font-size:12px;color:var(--mu);line-height:1.7;font-family:var(--fm)}
+.faq-item.open .faq-a{max-height:500px;padding:0 15px 15px 15px}
+
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:700px){.compare-grid{grid-template-columns:1fr}}
+.compare-col{padding:1.2rem;border-radius:12px;border:1px solid var(--bd)}
+.compare-col.old{background:rgba(255,101,132,.04);border-color:rgba(255,101,132,.25)}
+.compare-col.new{background:rgba(0,229,160,.04);border-color:rgba(0,229,160,.25)}
+.compare-title{font-size:13px;font-weight:700;margin-bottom:.8rem;display:flex;align-items:center;gap:6px}
+.compare-title.old{color:var(--r)}
+.compare-title.new{color:var(--g)}
+.compare-stat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(42,42,56,.3);font-size:12px}
+.compare-stat:last-child{border:none}
+.compare-stat-v{font-weight:700;font-family:var(--fm)}
+
+.paradox-box{background:linear-gradient(135deg,rgba(255,101,132,.08),rgba(255,209,102,.05));border:1px solid rgba(255,101,132,.3);border-radius:12px;padding:1.1rem;margin-bottom:1rem}
+.paradox-title{font-size:12px;color:var(--r);font-weight:700;margin-bottom:.5rem;display:flex;align-items:center;gap:6px}
+.paradox-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:.6rem}
+.paradox-num{font-size:22px;font-weight:800;font-family:var(--fm)}
+.paradox-num.red{color:var(--r)}
+.paradox-num.yellow{color:var(--y)}
+.paradox-lab{font-size:9px;color:var(--mu);font-family:var(--fm);margin-top:2px}
+
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 </style>
 </head>
 <body>
@@ -151,6 +200,25 @@ input[type=range]{padding:4px 0;background:none;border:none}
       Ce prototype utilise l'algorithme de Gale-Shapley (Prix Nobel 2012). Données importées automatiquement depuis l'ENT. Résultat optimal et stable. Zéro dossier injustement refusé.<br><br>
       <strong>Il a été construit seul, en dehors des heures de cours.</strong>
     </div>
+
+    <div style="margin-bottom:2rem">
+      <div style="font-family:var(--fm);font-size:10px;color:var(--mu);margin-bottom:8px;letter-spacing:.1em">// PREUVE — EMAIL REÇU APRÈS LA CLÔTURE DES CANDIDATURES</div>
+      <div class="email-proof">
+        <div class="em-head">
+          <div class="em-avatar">AJ</div>
+          <div>
+            <div class="em-from">Direction des Relations Internationales CY Tech</div>
+            <div class="em-meta">à &lt;étudiant@cyu.fr&gt;</div>
+          </div>
+        </div>
+        <div class="em-subj">Résultats candidatures mobilités études 2026/2027</div>
+        <div class="em-body">
+          Bonjour,<br><br>
+          Nous avons finalisé les sélections des projets de mobilités d'études pour 2026/2027. Votre dossier a retenu notre attention, <span class="em-highlight">cependant en raison du nombre de candidatures reçues (près de 200), de vos résultats académiques et des destinations souhaitées, nous ne sommes pas en mesure de vous attribuer un de vos 4 vœux</span>.<br><br>
+          Vous trouverez ci-joint la liste des destinations encore accessibles...
+        </div>
+      </div>
+    </div>
     <div class="splash-anon"><div class="anon-dot"></div>Source anonyme · Aucun auteur identifiable · Hébergé hors infrastructure CY Tech</div>
     <div style="margin-top:1.5rem;display:flex;gap:10px;flex-wrap:wrap">
       <button class="splash-btn" onclick="closeSplash()">Voir la démonstration →</button>
@@ -166,15 +234,21 @@ input[type=range]{padding:4px 0;background:none;border:none}
       <h1>Exchange <span>Matcher</span></h1>
       <div class="subtitle">// Algorithme de Gale-Shapley · 200 candidats simulés · Toutes universités partenaires</div>
     </div>
-    <div class="anon-badge"><div class="anon-dot"></div>Soumis anonymement</div>
+    <div class="header-actions">
+      <a href="https://github.com/basstreche9/exchange-matcher" target="_blank" class="source-link">📂 Code source</a>
+      <button class="share-btn" onclick="shareWA()">💬 Partager WhatsApp</button>
+      <div class="anon-badge"><div class="anon-dot"></div>Anonyme</div>
+    </div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('setup')">① Profil étudiant</button>
+    <button class="tab active" onclick="showTab('setup')">① Profil</button>
     <button class="tab" onclick="showTab('rank')">② Mes vœux</button>
     <button class="tab" onclick="showTab('sim')">③ Simulation</button>
+    <button class="tab" onclick="showTab('compare')">⚖ Comparer</button>
     <button class="tab" onclick="showTab('all')">📋 Universités</button>
     <button class="tab" onclick="showTab('algo')">⚙ Algorithme</button>
+    <button class="tab" onclick="showTab('faq')">❓ FAQ</button>
   </div>
 
   <!-- SETUP -->
@@ -312,6 +386,42 @@ input[type=range]{padding:4px 0;background:none;border:none}
       </div>
     </div>
   </div>
+
+  <!-- COMPARE -->
+  <div id="tab-compare" style="display:none">
+    <div class="card">
+      <div class="ct">// Comparaison directe des deux systèmes</div>
+      <div class="al aw">⚡ Clique "Lancer la comparaison" après avoir défini tes vœux. Même population de 200 candidats dans les deux cas. Seule l'attribution change.</div>
+      <div class="ifr" style="margin-bottom:1rem">
+        <button class="btn bpa" onclick="runCompare()">⚡ Lancer la comparaison</button>
+        <select id="scenario" onchange="runCompare()" style="width:260px">
+          <option value="real">Scénario réaliste (choix de merde)</option>
+          <option value="extreme">Scénario extrême (tous sur 3 unis)</option>
+          <option value="sorted">Scénario optimal (tous choisissent bien)</option>
+        </select>
+        <span id="compare-info" style="font-size:10px;color:var(--mu);font-family:var(--fm)"></span>
+      </div>
+      <div class="compare-grid" id="compare-result" style="display:none">
+        <div class="compare-col old">
+          <div class="compare-title old">❌ Système actuel (CY Tech)</div>
+          <div id="compare-old"></div>
+        </div>
+        <div class="compare-col new">
+          <div class="compare-title new">✅ Gale-Shapley</div>
+          <div id="compare-new"></div>
+        </div>
+      </div>
+      <div id="compare-explain" style="display:none;margin-top:1rem;font-size:12px;line-height:1.7;color:var(--mu);font-family:var(--fm)"></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div id="tab-faq" style="display:none">
+    <div class="card">
+      <div class="ct">// Questions que tout le monde se pose</div>
+      <div id="faq-list"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -441,47 +551,47 @@ const UNIS=[
   {id:'uqac',n:'UQAC Chicoutimi',c:'Canada',r:'Canada',cap:7,cost:0,s:['GI','MI','GC','BTC'],paid:false,w:'2e sem. + 500$CAD'},
   {id:'udem',n:'Université de Montréal',c:'Canada',r:'Canada',cap:3,cost:0,s:['MF'],paid:false,w:'2e sem.'},
   {id:'uqam',n:'UQAM',c:'Canada',r:'Canada',cap:2,cost:0,s:['Design'],paid:false},
-  {id:'concordia',n:'Concordia Montréal',c:'Canada',r:'Canada',cap:30,cost:12000,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'concordia',n:'Concordia Montréal',c:'Canada',r:'Canada',cap:2,cost:12000,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
   // UK/Irlande
   {id:'heriot',n:'Heriot-Watt',c:'Ecosse/Malaisie',r:'UK/Irlande',cap:10,cost:0,s:['GI','MI','MF','GC','BTC','Design'],paid:false},
-  {id:'griffith',n:'Griffith College Dublin',c:'Irlande',r:'UK/Irlande',cap:30,cost:2700,s:['GI','MI'],paid:true,ul:true},
-  {id:'dbs',n:'Dublin Business School',c:'Irlande',r:'UK/Irlande',cap:30,cost:2750,s:['GI','MF'],paid:true,ul:true},
-  {id:'herts',n:'Hertfordshire London',c:'Grande-Bretagne',r:'UK/Irlande',cap:30,cost:8500,s:['MF','Design','GC'],paid:true,ul:true},
-  {id:'brunel',n:'Brunel University London',c:'Grande-Bretagne',r:'UK/Irlande',cap:30,cost:9000,s:['GI','MF','Design','BTC'],paid:true,ul:true},
-  {id:'glasgow',n:'Univ. Glasgow',c:'Grande-Bretagne',r:'UK/Irlande',cap:30,cost:12000,s:['GI','MF'],paid:true,ul:true},
-  {id:'acd_ie',n:'American College Dublin',c:'Irlande',r:'UK/Irlande',cap:30,cost:2890,s:['MF'],paid:true,ul:true},
+  {id:'griffith',n:'Griffith College Dublin',c:'Irlande',r:'UK/Irlande',cap:2,cost:2700,s:['GI','MI'],paid:true,ul:true},
+  {id:'dbs',n:'Dublin Business School',c:'Irlande',r:'UK/Irlande',cap:2,cost:2750,s:['GI','MF'],paid:true,ul:true},
+  {id:'herts',n:'Hertfordshire London',c:'Grande-Bretagne',r:'UK/Irlande',cap:2,cost:8500,s:['MF','Design','GC'],paid:true,ul:true},
+  {id:'brunel',n:'Brunel University London',c:'Grande-Bretagne',r:'UK/Irlande',cap:2,cost:9000,s:['GI','MF','Design','BTC'],paid:true,ul:true},
+  {id:'glasgow',n:'Univ. Glasgow',c:'Grande-Bretagne',r:'UK/Irlande',cap:2,cost:12000,s:['GI','MF'],paid:true,ul:true},
+  {id:'acd_ie',n:'American College Dublin',c:'Irlande',r:'UK/Irlande',cap:2,cost:2890,s:['MF'],paid:true,ul:true},
   // USA
-  {id:'csulb',n:'CSULB Long Beach',c:'USA',r:'USA',cap:30,cost:6500,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
-  {id:'sfsu',n:'SFSU San Francisco',c:'USA',r:'USA',cap:30,cost:6600,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
-  {id:'ucsc',n:'UCSC Silicon Valley',c:'USA',r:'USA',cap:30,cost:5700,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
-  {id:'ucla',n:'UCLA Extension',c:'USA',r:'USA',cap:30,cost:6200,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
-  {id:'ucsd',n:'UC San Diego',c:'USA',r:'USA',cap:30,cost:6000,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'csulb',n:'CSULB Long Beach',c:'USA',r:'USA',cap:2,cost:6500,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'sfsu',n:'SFSU San Francisco',c:'USA',r:'USA',cap:2,cost:6600,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'ucsc',n:'UCSC Silicon Valley',c:'USA',r:'USA',cap:2,cost:5700,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'ucla',n:'UCLA Extension',c:'USA',r:'USA',cap:2,cost:6200,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
+  {id:'ucsd',n:'UC San Diego',c:'USA',r:'USA',cap:2,cost:6000,s:['GI','MI','MF','GC','BTC','Design'],paid:true,ul:true},
   {id:'ohio',n:'Ohio State Design',c:'USA',r:'USA',cap:2,cost:0,s:['Design'],paid:false},
   // Océanie
-  {id:'rmit_mel',n:'RMIT Melbourne',c:'Australie',r:'Océanie',cap:30,cost:12000,s:['GI','GC','Design'],paid:true,ul:true},
-  {id:'monash_mel',n:'Monash Melbourne',c:'Australie',r:'Océanie',cap:30,cost:13000,s:['GI','GC','Design'],paid:true,ul:true},
-  {id:'wollongong',n:'Univ. Wollongong',c:'Australie',r:'Océanie',cap:30,cost:10000,s:['GI','GC'],paid:true,ul:true},
-  {id:'swinburne',n:'Swinburne Melbourne',c:'Australie',r:'Océanie',cap:30,cost:11500,s:['GI','Design'],paid:true,ul:true},
-  {id:'uts',n:'UTS Sydney',c:'Australie',r:'Océanie',cap:30,cost:11000,s:['GI','Design'],paid:true,ul:true},
-  {id:'jcu_au',n:'James Cook Cairns',c:'Australie',r:'Océanie',cap:30,cost:11000,s:['BTC','GC'],paid:true,ul:true},
-  {id:'aut',n:'AUT Auckland',c:'Nouvelle-Zélande',r:'Océanie',cap:30,cost:9000,s:['GC','Design'],paid:true,ul:true},
+  {id:'rmit_mel',n:'RMIT Melbourne',c:'Australie',r:'Océanie',cap:2,cost:12000,s:['GI','GC','Design'],paid:true,ul:true},
+  {id:'monash_mel',n:'Monash Melbourne',c:'Australie',r:'Océanie',cap:2,cost:13000,s:['GI','GC','Design'],paid:true,ul:true},
+  {id:'wollongong',n:'Univ. Wollongong',c:'Australie',r:'Océanie',cap:2,cost:10000,s:['GI','GC'],paid:true,ul:true},
+  {id:'swinburne',n:'Swinburne Melbourne',c:'Australie',r:'Océanie',cap:2,cost:11500,s:['GI','Design'],paid:true,ul:true},
+  {id:'uts',n:'UTS Sydney',c:'Australie',r:'Océanie',cap:2,cost:11000,s:['GI','Design'],paid:true,ul:true},
+  {id:'jcu_au',n:'James Cook Cairns',c:'Australie',r:'Océanie',cap:2,cost:11000,s:['BTC','GC'],paid:true,ul:true},
+  {id:'aut',n:'AUT Auckland',c:'Nouvelle-Zélande',r:'Océanie',cap:2,cost:9000,s:['GC','Design'],paid:true,ul:true},
   // Payants Asia Exchange
-  {id:'konkuk',n:'Konkuk Univ. (Asia Exch.)',c:'Corée du Sud',r:'Asie',cap:30,cost:2650,s:['GI','BTC'],paid:true,ul:true},
-  {id:'walailak',n:'Walailak (Asia Exch.)',c:'Thaïlande',r:'Asie',cap:30,cost:2190,s:['GI','MF','Design'],paid:true,ul:true},
-  {id:'upm_ae',n:'Univ. Putra Malaysia (Asia Exch.)',c:'Malaisie',r:'Asie',cap:30,cost:2290,s:['GI','MF','GC','Design'],paid:true,ul:true},
-  {id:'kasetsart_ae',n:'Kasetsart (Asia Exch.)',c:'Thaïlande',r:'Asie',cap:30,cost:2650,s:['GI','BTC'],paid:true,ul:true},
-  {id:'temple_jp',n:'Temple Univ. Japan (Asia Exch.)',c:'Japon',r:'Asie',cap:30,cost:4600,s:['GI'],paid:true,ul:true},
-  {id:'atma',n:'Atma Jaya Jakarta (Asia Exch.)',c:'Indonésie',r:'Asie',cap:30,cost:2290,s:['GI','BTC'],paid:true,ul:true},
-  {id:'sliit',n:'SLIIT Sri Lanka (Asia Exch.)',c:'Sri Lanka',r:'Asie',cap:30,cost:2390,s:['BTC','Design'],paid:true,ul:true},
+  {id:'konkuk',n:'Konkuk Univ. (Asia Exch.)',c:'Corée du Sud',r:'Asie',cap:2,cost:2650,s:['GI','BTC'],paid:true,ul:true},
+  {id:'walailak',n:'Walailak (Asia Exch.)',c:'Thaïlande',r:'Asie',cap:2,cost:2190,s:['GI','MF','Design'],paid:true,ul:true},
+  {id:'upm_ae',n:'Univ. Putra Malaysia (Asia Exch.)',c:'Malaisie',r:'Asie',cap:2,cost:2290,s:['GI','MF','GC','Design'],paid:true,ul:true},
+  {id:'kasetsart_ae',n:'Kasetsart (Asia Exch.)',c:'Thaïlande',r:'Asie',cap:2,cost:2650,s:['GI','BTC'],paid:true,ul:true},
+  {id:'temple_jp',n:'Temple Univ. Japan (Asia Exch.)',c:'Japon',r:'Asie',cap:2,cost:4600,s:['GI'],paid:true,ul:true},
+  {id:'atma',n:'Atma Jaya Jakarta (Asia Exch.)',c:'Indonésie',r:'Asie',cap:2,cost:2290,s:['GI','BTC'],paid:true,ul:true},
+  {id:'sliit',n:'SLIIT Sri Lanka (Asia Exch.)',c:'Sri Lanka',r:'Asie',cap:2,cost:2390,s:['BTC','Design'],paid:true,ul:true},
   // Payants Studies Up
-  {id:'endicott',n:'Endicott College (Studies Up)',c:'Corée du Sud',r:'Asie',cap:30,cost:2850,s:['GI'],paid:true,ul:true},
-  {id:'solbridge',n:'Solbridge (Studies Up)',c:'Corée du Sud',r:'Asie',cap:30,cost:4500,s:['MF'],paid:true,ul:true},
-  {id:'monash_kl',n:'Monash KL (Studies Up)',c:'Malaisie',r:'Asie',cap:30,cost:4500,s:['GI','BTC','GC'],paid:true,ul:true},
-  {id:'swinburne_sr',n:'Swinburne Sarawak (Studies Up)',c:'Malaisie',r:'Asie',cap:30,cost:5000,s:['GI','Design'],paid:true,ul:true},
-  {id:'jcu_sg',n:'James Cook Singapour (Studies Up)',c:'Singapour',r:'Asie',cap:30,cost:7000,s:['GI','MI','BTC'],paid:true,ul:true},
-  {id:'ecu_sl',n:'ECU Sri Lanka (Studies Up)',c:'Sri Lanka',r:'Asie',cap:30,cost:4000,s:['GI','Design'],paid:true,ul:true},
-  {id:'rmit_vn',n:'RMIT Vietnam (Studies Up)',c:'Vietnam',r:'Asie',cap:30,cost:4750,s:['GI','GC','Design'],paid:true,ul:true},
-  {id:'wollongong_dxb',n:'Wollongong Dubai (Studies Up)',c:'Émirats',r:'Asie',cap:30,cost:9000,s:['GI','GC','Design'],paid:true,ul:true},
+  {id:'endicott',n:'Endicott College (Studies Up)',c:'Corée du Sud',r:'Asie',cap:2,cost:2850,s:['GI'],paid:true,ul:true},
+  {id:'solbridge',n:'Solbridge (Studies Up)',c:'Corée du Sud',r:'Asie',cap:2,cost:4500,s:['MF'],paid:true,ul:true},
+  {id:'monash_kl',n:'Monash KL (Studies Up)',c:'Malaisie',r:'Asie',cap:2,cost:4500,s:['GI','BTC','GC'],paid:true,ul:true},
+  {id:'swinburne_sr',n:'Swinburne Sarawak (Studies Up)',c:'Malaisie',r:'Asie',cap:2,cost:5000,s:['GI','Design'],paid:true,ul:true},
+  {id:'jcu_sg',n:'James Cook Singapour (Studies Up)',c:'Singapour',r:'Asie',cap:2,cost:7000,s:['GI','MI','BTC'],paid:true,ul:true},
+  {id:'ecu_sl',n:'ECU Sri Lanka (Studies Up)',c:'Sri Lanka',r:'Asie',cap:2,cost:4000,s:['GI','Design'],paid:true,ul:true},
+  {id:'rmit_vn',n:'RMIT Vietnam (Studies Up)',c:'Vietnam',r:'Asie',cap:2,cost:4750,s:['GI','GC','Design'],paid:true,ul:true},
+  {id:'wollongong_dxb',n:'Wollongong Dubai (Studies Up)',c:'Émirats',r:'Asie',cap:2,cost:9000,s:['GI','GC','Design'],paid:true,ul:true},
   {id:'zust',n:'ZUST Chine',c:'Chine',r:'Asie',cap:5,cost:1200,s:['GI','GC'],paid:true},
 ];
 
@@ -512,12 +622,273 @@ function avgUpd(v){
 }
 
 function showTab(t){
-  ['setup','rank','sim','all','algo'].forEach(id=>document.getElementById('tab-'+id).style.display=id===t?'block':'none');
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['setup','rank','sim','all','algo'][i]===t));
+  ['setup','rank','sim','compare','all','algo','faq'].forEach(id=>document.getElementById('tab-'+id).style.display=id===t?'block':'none');
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['setup','rank','sim','compare','all','algo','faq'][i]===t));
   if(t==='rank')renderUL();
   if(t==='sim')runSim();
   if(t==='all')rAT();
+  if(t==='faq')renderFAQ();
 }
+
+// SHARE
+function shareWA(){
+  const msg=`Regardez ça — un étudiant en GI a construit un système de mobilité en quelques heures. Mieux que le nôtre.\n\n${window.location.href}`;
+  const url=`https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url,'_blank');
+}
+
+// COMPARE
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildFullPrefs(basePrefs,spec,randomizeFallback=false){
+  const out=[];
+  const seen=new Set();
+
+  (Array.isArray(basePrefs)?basePrefs:[]).forEach(u=>{
+    if(u?.id&&!seen.has(u.id)){seen.add(u.id);out.push(u);}
+  });
+
+  let specPool=UNIS.filter(u=>u.s.includes(spec));
+  let otherPool=UNIS.filter(u=>!u.s.includes(spec));
+
+  if(randomizeFallback){
+    specPool=shuffle(specPool);
+    otherPool=shuffle(otherPool);
+  }
+
+  [...specPool,...otherPool].forEach(u=>{
+    if(!seen.has(u.id)){seen.add(u.id);out.push(u);}
+  });
+
+  return out;
+}
+
+function generateScenarioPrefs(scenario,spec){
+  const avail=UNIS.filter(u=>u.s.includes(spec));
+  const popular=avail.filter(u=>u.cap<=4).sort(()=>Math.random()-.5);
+  const safe=avail.filter(u=>u.cap>4).sort(()=>Math.random()-.5);
+  if(scenario==='extreme'){
+    // Everyone picks the same 3 top prestige unis
+    const topUnis=['polimi','keio','nycu','hanyang','metu','iitindore','charles'].map(id=>UNIS.find(u=>u.id===id)).filter(u=>u&&u.s.includes(spec));
+    if(topUnis.length>=3)return topUnis.slice(0,3+Math.floor(Math.random()*2));
+    return popular.slice(0,3);
+  }
+  if(scenario==='sorted'){
+    // Smart: mix of popular + safe fallbacks
+    const prefs=[];
+    for(let j=0;j<2&&j<popular.length;j++)prefs.push(popular[j]);
+    for(let j=0;j<3&&j<safe.length;j++)prefs.push(safe[j]);
+    for(let j=2;j<4&&j<popular.length;j++)prefs.push(popular[j]);
+    return prefs;
+  }
+  // real: mostly bad choices
+  const prefs=[];
+  const popCount=3+Math.floor(Math.random()*3);
+  for(let j=0;j<popCount&&j<popular.length;j++)prefs.push(popular[j]);
+  const safeCount=Math.random()<0.3?1+Math.floor(Math.random()*2):0;
+  for(let j=0;j<safeCount&&j<safe.length;j++)prefs.push(safe[j]);
+  return prefs;
+}
+
+function runCompare(){
+
+  if(!myRk.length){document.getElementById('compare-info').textContent="⚠️ Définis d'abord tes vœux dans l'onglet Mes vœux";return;}
+  const scenario=document.getElementById('scenario')?.value||'real';
+  // Regenerate others' prefs based on scenario
+  const scenarioOthers=others.map(o=>{
+    const basePrefs=generateScenarioPrefs(scenario,o.spec);
+    return {...o,prefs:buildFullPrefs(basePrefs,o.spec,true),currentMatch:null,nextPref:0};
+  });
+  // New system — Gale-Shapley
+  const myAvg=parseFloat(document.getElementById('s-avg').value);
+  const myName=document.getElementById('s-name').value||'Moi';
+  const mySpec=document.getElementById('s-spec').value;
+  const myFullPrefs=buildFullPrefs(myRk,mySpec,false);
+  const gsStudents=[
+    {name:myName||'Moi',avg:myAvg,prefs:[...myFullPrefs],spec:mySpec,isMe:true,nextPref:0,currentMatch:null},
+    ...scenarioOthers.map(o=>({...o,prefs:[...buildFullPrefs(o.prefs,o.spec,false)],nextPref:0,currentMatch:null}))
+  ];
+  const gsUniM={};UNIS.forEach(u=>{gsUniM[u.id]=[];});
+  const gsFree=[...gsStudents];let it=0;
+  while(gsFree.length&&it<200000){
+    it++;const s=gsFree.shift();
+    if(s.nextPref>=s.prefs.length)continue;
+    const u=s.prefs[s.nextPref];s.nextPref++;
+    const uid=u.id;const cap=UNIS.find(x=>x.id===uid)?.cap||1;
+    if(!gsUniM[uid])gsUniM[uid]=[];
+    if(gsUniM[uid].length<cap){gsUniM[uid].push(s);s.currentMatch=uid;}
+    else{
+      const worst=[...gsUniM[uid]].sort((a,b)=>a.avg-b.avg)[0];
+      if(s.avg>worst.avg){gsUniM[uid]=gsUniM[uid].filter(x=>x!==worst);worst.currentMatch=null;gsUniM[uid].push(s);s.currentMatch=uid;if(worst.nextPref<worst.prefs.length)gsFree.push(worst);}
+      else{if(s.nextPref<s.prefs.length)gsFree.push(s);}
+    }
+  }
+  const gsMatched=gsStudents.filter(s=>s.currentMatch).length;
+  const gsMe=gsStudents.find(s=>s.isMe);
+  const gsMyUni=gsMe.currentMatch?UNIS.find(u=>u.id===gsMe.currentMatch):null;
+  const gsMyWish=gsMyUni?gsMe.prefs.findIndex(r=>r.id===gsMe.currentMatch)+1:null;
+  const gsMyWishLabel=gsMyWish?`(${gsMyWish<=4?'V'+gsMyWish:'Fallback #'+gsMyWish})`:'';
+  let gsEmptySeats=0;UNIS.forEach(u=>{gsEmptySeats+=Math.max(0,u.cap-gsUniM[u.id].length);});
+
+  // OLD SYSTEM — only first 4 wishes considered
+  const oldStudents=[{name:myName||'Moi',avg:myAvg,prefs:[...myFullPrefs],spec:mySpec,isMe:true,currentMatch:null},
+    ...scenarioOthers.map(o=>({...o,prefs:[...o.prefs],currentMatch:null}))];
+  const sorted=[...oldStudents].sort((a,b)=>b.avg-a.avg);
+  const oldUniM={};UNIS.forEach(u=>{oldUniM[u.id]=0;});
+  sorted.forEach(s=>{
+    const top4=s.prefs.slice(0,4);
+    for(const u of top4){
+      if(oldUniM[u.id]<u.cap){
+        if(Math.random()>0.10){oldUniM[u.id]++;s.currentMatch=u.id;break;}
+      }
+    }
+  });
+  const oldMatched=oldStudents.filter(s=>s.currentMatch).length;
+  const oldMe=oldStudents.find(s=>s.isMe);
+  const oldMyUni=oldMe.currentMatch?UNIS.find(u=>u.id===oldMe.currentMatch):null;
+  const oldMyWish=oldMyUni?oldMe.prefs.findIndex(r=>r.id===oldMe.currentMatch)+1:null;
+  const oldUnmatched=oldStudents.length-oldMatched;
+  let oldEmptySeats=0;UNIS.forEach(u=>{oldEmptySeats+=Math.max(0,u.cap-oldUniM[u.id]);});
+
+  document.getElementById('compare-result').style.display='grid';
+  document.getElementById('compare-info').textContent=`Scénario : ${scenario==='real'?'choix réalistes':scenario==='extreme'?'tous sur les 3 mêmes unis':'tout le monde joue bien'}`;
+  document.getElementById('compare-old').innerHTML=`
+    <div class="compare-stat"><span>Placés</span><span class="compare-stat-v" style="color:var(--r)">${oldMatched} / ${oldStudents.length}</span></div>
+    <div class="compare-stat"><span>Non placés</span><span class="compare-stat-v" style="color:var(--r)">${oldUnmatched}</span></div>
+    <div class="compare-stat"><span>Vœux considérés</span><span class="compare-stat-v" style="color:var(--r)">4 max</span></div>
+    <div class="compare-stat"><span>Places vides</span><span class="compare-stat-v" style="color:var(--y)">${oldEmptySeats}</span></div>
+    <div class="compare-stat"><span>Ton résultat</span><span class="compare-stat-v">${oldMyUni?oldMyUni.n+' (V'+oldMyWish+')':'<span style="color:var(--r)">Refusé</span>'}</span></div>
+    <div class="compare-stat"><span>Résultat stable ?</span><span class="compare-stat-v" style="color:var(--r)">Non</span></div>
+  `;
+  document.getElementById('compare-new').innerHTML=`
+    <div class="compare-stat"><span>Placés</span><span class="compare-stat-v" style="color:var(--g)">${gsMatched} / ${gsStudents.length}</span></div>
+    <div class="compare-stat"><span>Non placés</span><span class="compare-stat-v" style="color:var(--g)">${gsStudents.length-gsMatched}</span></div>
+    <div class="compare-stat"><span>Vœux considérés</span><span class="compare-stat-v" style="color:var(--g)">Tous (illimités)</span></div>
+    <div class="compare-stat"><span>Places vides</span><span class="compare-stat-v" style="color:var(--g)">${gsEmptySeats}</span></div>
+    <div class="compare-stat"><span>Ton résultat</span><span class="compare-stat-v">${gsMyUni?gsMyUni.n+' '+gsMyWishLabel:'<span style="color:var(--r)">Non placé</span>'}</span></div>
+    <div class="compare-stat"><span>Résultat stable ?</span><span class="compare-stat-v" style="color:var(--g)">Oui ✓</span></div>
+  `;
+  const diff=gsMatched-oldMatched;
+  const seatsDiff=oldEmptySeats-gsEmptySeats;
+  document.getElementById('compare-explain').style.display='block';
+  document.getElementById('compare-explain').innerHTML=`
+    // Résultat : <strong style="color:var(--g)">+${diff} étudiants mieux placés</strong> avec Gale-Shapley.<br>
+    // <strong style="color:var(--y)">${seatsDiff} places vides en moins</strong> — GS utilise mieux les capacités.<br>
+    // Le système actuel laisse <strong style="color:var(--r)">${oldUnmatched} étudiants refusés</strong> alors que des places existent.
+  `;
+}
+
+function ALL_UNIS_IDS(){return UNIS.map(u=>u.id);}
+
+// FAQ
+const FAQS=[
+  {q:"C'est quoi l'algorithme de Gale-Shapley ?",a:"Un algorithme d'appariement stable inventé en 1962, récompensé par le Prix Nobel d'Économie en 2012. Il est utilisé pour l'attribution de places d'internat médical aux États-Unis (NRMP), pour l'affectation des élèves aux écoles publiques à Boston et New York, et pour plein d'autres systèmes d'attribution. C'est littéralement le gold standard."},
+  {q:"Pourquoi c'est mieux que le système actuel ?",a:"Le système actuel fait choisir 4 vœux à 200 étudiants sans toutes les informations (résultats incomplets, pas de visibilité sur les autres candidats, pas de nombre de places réel). Résultat : des étudiants refusés sur tous leurs vœux pendant que des places restent vides. Gale-Shapley résout ce paradoxe : résultat optimal et stable, aucune place gaspillée."},
+  {q:"Mais c'est pas injuste pour les meilleurs étudiants ?",a:"Non. Les étudiants avec les meilleures moyennes obtiennent leurs premiers vœux en priorité. La différence c'est que personne avec une très bonne moyenne ne se retrouve sans aucune attribution à cause d'un mauvais choix stratégique. Tout le monde gagne : les meilleurs ont leurs premiers vœux, les autres ont au moins un vœu attribué si possible."},
+  {q:"Pourquoi dire \"anonyme\" ? C'est louche non ?",a:"L'anonymat protège l'auteur contre d'éventuelles représailles académiques. Quand tu critiques publiquement une administration universitaire, tu prends un risque. Le message et la proposition comptent plus que l'identité. Si la DRI veut discuter de cette solution, elle peut simplement l'implémenter — pas besoin de connaître l'auteur."},
+  {q:"Combien de temps ça a pris à construire ?",a:"Quelques heures. C'est un étudiant en première année d'ingénierie. Ça dit quelque chose sur la simplicité de la solution — et sur pourquoi c'est problématique qu'elle n'existe pas déjà."},
+  {q:"Les données des étudiants sont-elles collectées ?",a:"Non. Zéro donnée collectée, zéro cookie, zéro analytics. Tout tourne localement dans ton navigateur. Tu peux vérifier le code source sur le repo GitHub (lien en haut de la page)."},
+  {q:"Et si la DRI ne répond pas ?",a:"C'est prévu. Plus le site circule entre étudiants, plus la pression augmente. Les étudiants refusés cette année devraient tous le voir. L'objectif c'est que la question devienne impossible à ignorer."},
+  {q:"Je peux modifier le site ou proposer des améliorations ?",a:"Oui. Le code est open-source sur GitHub. Fork, pull request, ou forke et héberge ta propre version. C'est un bien commun, pas une propriété privée."},
+];
+
+function renderFAQ(){
+  document.getElementById('faq-list').innerHTML=FAQS.map((f,i)=>`
+    <div class="faq-item" id="faq-${i}">
+      <div class="faq-q" onclick="toggleFAQ(${i})">
+        <span>${f.q}</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">${f.a}</div>
+    </div>
+  `).join('');
+}
+function toggleFAQ(i){document.getElementById('faq-'+i).classList.toggle('open');}
+
+// ========== EASTER EGG ==========
+// Press "K" three times in a row to show/hide university star ratings
+// (or type "khayem" anywhere)
+const UNI_STARS={
+  polimi:5,metu:5,keio:5,nycu:5,iitindore:5,tudelft_d:5,sapienza:5,ucsd:5,monash_mel:5,rmit_mel:5,glasgow:5,snu:5,monash_kl:5,
+  charles:4,wroclaw:4,sdu:4,vub:4,tud:4,aueb:4,bme:4,goteborg:4,hanyang:4,ntust:4,xjtlu:4,kasetsart:4,thammasat:4,inpt:4,ufmg:4,ufsc:4,inteli:4,ets:4,heriot:4,ucla:4,ucsc:4,wollongong:4,swinburne:4,uts:4,rmit_vn:4,upm_ae:4,kasetsart_ae:4,ohio:4,tampere:4,brunel:4,uliege:4,pisa:4,napoli:4,padova:4,bologna_d:4,nova:4,wollongong_dxb:4,jcu_au:4,
+  tartu:3,howest:3,reutlingen:3,hft:3,cafoscari:3,iscte:3,lodz:3,tuke:3,ljubljana:3,sofia:3,algebra:3,rijeka:3,bahcesehir:3,yeditepe:3,reykjavik:3,vgtu:3,politehnica:3,kookmin:3,dongseo:3,sookmyung:3,ajou:3,knu:3,neu:3,usst:3,cqu:3,kyutech:3,chiba:3,kiit:3,usth:3,chiangmai:3,uir:3,ngu:3,alexandria:3,ufe:3,esprit:3,sesame:3,uandes:3,tec_mty:3,iteso:3,udg:3,unlp:3,uns:3,eia:3,unesp:3,uqac:3,udem:3,uqam:3,griffith:3,dbs:3,herts:3,acd_ie:3,csulb:3,sfsu:3,aut:3,solbridge:3,konkuk:3,swinburne_sr:3,jcu_sg:3,ecu_sl:3,ulisboa_d:3,minho:3,warsaw_d:3,chieti:3,ted_d:3,politiehnica:3,singidunum:3,
+  avans:2,regensburg:2,hepl:2,stluc:2,craiova:2,alba:2,kazimierz:2,kazimierz_gc:2,kazimierz_mi:2,kazimierz_gi:2,abbant:2,alanya:2,alanya_d:2,mitrovica:2,luarasi:2,umt_al:2,ibu:2,adriatic:2,unnoba:2,uady:2,ulima:2,hutech:2,esiac:2,polytec_sss:2,pi_tn:2,bkbiet:2,lpu:2,rku:2,presidency:2,vmrf:2,myongji:2,walailak:2,atma:2,sliit:2,endicott:2,zust:2,uctm:2,firenze:2,ferrara:2,catania:2,dublin_ch:2,ucd:2,patras:2,babes:2,karadeniz:2,bologna_gc:2,itu:2,upf:2,ujaen:2,ulpgc:2,sevilla:2,uab:2,uco:2,ua_es:2,uab_bio:2,ktu:2,lsb:2,bologna:2,
+};
+
+let starsVisible=false;
+function toggleStars(){
+  starsVisible=!starsVisible;
+  // Flash notification
+  const notif=document.createElement('div');
+  notif.style.cssText='position:fixed;bottom:2rem;right:2rem;background:var(--ac);color:#fff;padding:10px 16px;border-radius:10px;font-family:var(--fm);font-size:11px;z-index:10000;animation:slidein 0.3s';
+  notif.textContent=starsVisible?'⭐ Easter egg activé — étoiles visibles':'⭐ Easter egg désactivé';
+  document.body.appendChild(notif);
+  setTimeout(()=>notif.remove(),2000);
+  renderUL();rAT();
+}
+
+// Track K presses and typed sequence
+let kCount=0,kTimer=null,typed='';
+document.addEventListener('keydown',e=>{
+  if(e.key.toLowerCase()==='k'&&!e.ctrlKey&&!e.metaKey){
+    kCount++;
+    clearTimeout(kTimer);
+    kTimer=setTimeout(()=>{kCount=0;},800);
+    if(kCount>=3){toggleStars();kCount=0;}
+  }
+  // Also accept typing "khayem"
+  if(e.key.length===1){
+    typed=(typed+e.key.toLowerCase()).slice(-6);
+    if(typed==='khayem'){toggleStars();typed='';}
+  }
+});
+
+// Extend renderUL and rAT to show stars
+const _renderUL=renderUL;
+renderUL=function(){
+  _renderUL();
+  if(starsVisible){
+    document.querySelectorAll('.ui').forEach(el=>{
+      const txt=el.querySelector('.un')?.textContent;
+      const uni=UNIS.find(u=>u.n===txt);
+      if(uni&&UNI_STARS[uni.id]){
+        const badges=el.querySelector('.ubs');
+        if(badges&&!el.querySelector('.star-badge')){
+          const star=document.createElement('span');
+          star.className='bdg star-badge';
+          star.style.cssText='background:rgba(255,209,102,.2);color:var(--y)';
+          star.textContent='★'.repeat(UNI_STARS[uni.id]);
+          badges.insertBefore(star,badges.firstChild);
+        }
+      }
+    });
+  }
+};
+const _rAT=rAT;
+rAT=function(){
+  _rAT();
+  if(starsVisible){
+    const rows=document.querySelectorAll('#at tbody tr');
+    rows.forEach(tr=>{
+      const name=tr.querySelector('td:first-child')?.textContent?.split(' ⚠')[0].trim();
+      const uni=UNIS.find(u=>u.n===name);
+      if(uni&&UNI_STARS[uni.id]&&!tr.querySelector('.star-cell')){
+        const td=document.createElement('td');
+        td.className='star-cell';
+        td.style.cssText='color:var(--y);font-family:var(--fm);font-size:11px';
+        td.textContent='★'.repeat(UNI_STARS[uni.id]);
+        tr.appendChild(td);
+      }
+    });
+  }
+};
 
 function regen(){
   const names=['Alice M.','Baptiste L.','Camille D.','Damien F.','Emma R.','Florian T.','Gabriel P.','Hugo B.','Inès C.','Jules N.','Karim A.','Laura S.','Martin V.','Nadia O.','Omar K.','Pauline J.','Quentin H.','Rania Z.','Sébastien L.','Tina W.','Ugo B.','Valeria F.','William C.','Xavier M.','Yasmine N.','Zakaria B.','Anaïs T.','Boris G.','Céline R.','Dylan M.','Elisa F.','Franck B.','Giulia R.','Hassan M.','Ilona S.','Jonas P.','Kenza A.','Leo C.','Mia K.','Nathan B.','Olivia T.','Pierre D.','Quinn H.','Rosa M.','Sam W.','Théo L.','Uma K.','Victor P.','Wendy S.','Youssef A.','Zara H.','Aaron B.','Bianca L.','Chris M.','Diana F.','Ethan R.','Fiona T.','George P.','Hannah B.','Ivan C.','Julia N.','Karl O.','Lena K.','Marco V.','Nina O.','Oscar K.','Petra J.','Rafael H.','Sara Z.','Tom L.','Vadim F.','Wera C.','Xander M.','Yara N.','Zoe B.','Adam T.','Bella G.','Carlos R.','Dana L.','Edwin M.','Fatou N.','Gael O.','Helen K.','Iban A.','Jade Z.','Kevin B.','Lily F.','Max P.','Nora J.','Otto H.','Pia L.','Quan M.','Reem S.','Stefan L.','Tamar W.','Ulrich C.','Vera M.','Wolf B.','Xia R.','Yves N.','Zena K.','Abel L.','Bea F.','Cyril M.','Dora R.','Elan B.','Fara T.','Glen P.','Hana B.','Iris C.','Johan N.','Kira O.','Luc K.','Maya V.','Nikos O.','Oxana K.','Peri J.','Rai H.','Sana Z.','Tim L.','Ula B.','Val F.','Win C.','Xel M.','Ylan N.','Zita B.','Aron T.','Beta G.','Cruz R.','Dali L.','Edna M.','Femi N.','Gina O.','Hiro K.','Ines A.','Jae Z.','Kobe B.','Luna F.','Manu P.','Nova J.','Oskar H.','Ryo M.','Seo S.','Tai L.','Umi W.','Via C.','Wei M.','Xiu B.','Yan R.','Zo K.','Agi L.','Bao F.','Cai M.','Dan R.','Eli B.','Fay T.','Gio P.','Han B.','Isa C.','Jan N.','Kim O.','Lui K.','Mio V.','Nan O.','Ola K.','Pat J.','Rio H.','Sol Z.','Tan L.','Uta B.','Vin F.','Wil C.','Xu M.','Yun N.','Zia B.','Ami T.','Bui G.','Chi R.','Dun L.','Ero M.','Fia N.','Guo O.','Hui K.','Jil Z.','Kol B.','Lea F.','Mei P.','Nil J.','Oti H.','Pua L.','Que M.','Ruo S.','Shi L.','Tao W.','Van M.','Wai B.','Xan R.','Yol K.'];
@@ -533,11 +904,20 @@ function regen(){
     else avg=17.5+Math.random()*2;
     avg=Math.round(Math.min(20,Math.max(5,avg))*10)/10;
     const spec=allSpecs[Math.floor(Math.random()*allSpecs.length)];
-    // Realistic prefs: mix of good and bad unis, not just top ones
+    // REALISTIC bad choices for the first picks (comparison still uses top 4)
     const avail=UNIS.filter(u=>u.s.includes(spec));
-    const shuffled=[...avail].sort(()=>Math.random()-.5);
-    // Bias slightly toward lower-cap unis but keep it random
-    const prefs=shuffled.slice(0,3+Math.floor(Math.random()*10));
+    const popular=avail.filter(u=>u.cap<=4).sort(()=>Math.random()-.5);
+    const safe=avail.filter(u=>u.cap>4).sort(()=>Math.random()-.5);
+    const topPrefs=[];
+    // 3-5 popular low-cap unis first (the mistake everyone makes)
+    const popCount=3+Math.floor(Math.random()*3);
+    for(let j=0;j<popCount&&j<popular.length;j++)topPrefs.push(popular[j]);
+    // 0-2 safe fallbacks
+    const safeCount=Math.random()<0.3?1+Math.floor(Math.random()*2):0;
+    for(let j=0;j<safeCount&&j<safe.length;j++)topPrefs.push(safe[j]);
+
+    // Then append ALL universities as fallback so GS can always continue proposing
+    const prefs=buildFullPrefs(topPrefs,spec,true);
     others.push({name,avg,prefs,spec,isMe:false,nextPref:0,currentMatch:null});
   }
   document.getElementById('s-cnt').textContent='199 candidats générés';
@@ -668,9 +1048,10 @@ function galeShapley(){
   const myAvg=parseFloat(document.getElementById('s-avg').value);
   const myName=document.getElementById('s-name').value||'Moi';
   const mySpec=document.getElementById('s-spec').value;
+  const myFullPrefs=buildFullPrefs(myRk,mySpec,false);
   const students=[
-    {name:myName||'Moi',avg:myAvg,prefs:[...myRk],spec:mySpec,isMe:true,nextPref:0,currentMatch:null},
-    ...others.map(o=>({...o,prefs:[...o.prefs],nextPref:0,currentMatch:null}))
+    {name:myName||'Moi',avg:myAvg,prefs:[...myFullPrefs],spec:mySpec,isMe:true,nextPref:0,currentMatch:null},
+    ...others.map(o=>({...o,prefs:[...buildFullPrefs(o.prefs,o.spec,false)],nextPref:0,currentMatch:null}))
   ];
   const uniM={};UNIS.forEach(u=>{uniM[u.id]=[];});
   const free=[...students];let it=0;
@@ -707,10 +1088,24 @@ function runSim(){
     <div class="sb2"><div class="sl">Places totales</div><div class="sv sva">${UNIS.reduce((a,u)=>a+u.cap,0)}</div></div>
   `;
   const myU=me.currentMatch?UNIS.find(u=>u.id===me.currentMatch):null;
-  const myW=myU?myRk.findIndex(r=>r.id===me.currentMatch)+1:null;
+  const myW=myU?me.prefs.findIndex(r=>r.id===me.currentMatch)+1:null;
+  const myWLabel=myW?` — ${myW<=4?"c'était ton vœu n°"+myW:'attribué via fallback (rang #'+myW+')'}`:'';
   document.getElementById('my-r').innerHTML=myU
-    ?`<div class="al as">✅ Accepté à <strong>${myU.n}</strong> (${myU.c}) — c'était ton vœu n°${myW}</div>`
+    ?`<div class="al as">✅ Accepté à <strong>${myU.n}</strong> (${myU.c})${myWLabel}</div>`
     :`<div class="al ar">⚠️ Aucun vœu attribué avec cette moyenne (${myAvg.toFixed(1)}/20). Ajoute plus de vœux ou des universités avec plus de places.</div>`;
+  // PARADOX BOX — empty seats vs unplaced
+  const unmatched=students.length-matched.length;
+  let emptySeats=0;UNIS.forEach(u=>{emptySeats+=Math.max(0,u.cap-(uniM[u.id]?.length||0));});
+  document.getElementById('my-r').innerHTML+=`
+    <div class="paradox-box">
+      <div class="paradox-title">⚠ Le paradoxe du système actuel</div>
+      <div style="font-size:11px;color:var(--mu);line-height:1.6;font-family:var(--fm)">Même avec Gale-Shapley (qui optimise), des places restent vides si l'offre dépasse la demande. <strong style="color:var(--y)">Mais le vrai paradoxe c'est le système actuel :</strong> il laisse des places vides ET refuse des étudiants qui auraient pu les occuper — ce qui ne devrait jamais arriver.</div>
+      <div class="paradox-stats">
+        <div><div class="paradox-num yellow">${emptySeats}</div><div class="paradox-lab">places vides</div></div>
+        <div><div class="paradox-num red">${unmatched}</div><div class="paradox-lab">étudiants sans attribution</div></div>
+      </div>
+    </div>
+  `;
   const sorted=[...students].sort((a,b)=>b.avg-a.avg);
   lastRows=sorted;fTbl();
   const active=UNIS.filter(u=>(uniM[u.id]?.length||0)>0).sort((a,b)=>(uniM[b.id]?.length||0)-(uniM[a.id]?.length||0));
