@@ -12,8 +12,35 @@ body{background:var(--bg);color:var(--tx);font-family:var(--fh);min-height:100vh
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);background-size:40px 40px;opacity:.2;pointer-events:none;z-index:0}
 
 /* SPLASH */
-#splash{position:fixed;inset:0;background:#0a0a0f;z-index:9999;display:flex;align-items:center;justify-content:center;padding:2rem}
-.splash-inner{max-width:780px;width:100%}
+#splash{position:fixed;inset:0;background:#0a0a0f;z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.splash-inner{max-width:780px;width:100%;padding-bottom:5rem;min-height:100%}
+.splash-sticky-btn{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,#0a0a0f 60%,transparent);padding:1.5rem 1rem;z-index:10000;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;pointer-events:none}
+.splash-sticky-btn > *{pointer-events:auto}
+@media(max-width:600px){
+  #splash{padding:1rem;align-items:flex-start}
+  .splash-inner{padding-bottom:6rem}
+  .splash-btn{padding:16px 24px;font-size:14px;width:100%}
+  .email-proof{font-size:11px;padding:1rem}
+  .email-proof .em-subj{font-size:13px}
+  .email-proof .em-body{font-size:11px}
+  .splash-msg{font-size:1.1rem!important}
+  .splash-sub{font-size:10px!important;padding-left:.75rem}
+  .tabs{overflow-x:auto;flex-wrap:nowrap;max-width:100%;justify-content:flex-start}
+  .tab{white-space:nowrap;flex-shrink:0}
+  .tc,.g2,.compare-grid{grid-template-columns:1fr!important}
+  h1{font-size:1.8rem!important}
+  .header-actions{width:100%;justify-content:flex-start}
+  .share-btn,.source-link{font-size:11px;padding:6px 10px}
+  body::before{background-size:30px 30px}
+  .info-import{padding:.8rem}
+  .ii-label{width:100px;font-size:9px}
+  .ii-val{font-size:11px}
+  .card{padding:1rem}
+  .ss{grid-template-columns:repeat(2,1fr)}
+  .sv{font-size:16px}
+  .rt{font-size:10px}
+  .rt th,.rt td{padding:5px 6px}
+}
 .splash-tag{font-family:var(--fm);font-size:10px;letter-spacing:.2em;color:var(--mu);text-transform:uppercase;margin-bottom:1.5rem}
 .splash-msg{font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:600;line-height:1.6;color:var(--tx);margin-bottom:2rem}
 .splash-msg em{color:var(--ac);font-style:normal}
@@ -220,10 +247,9 @@ input[type=range]{padding:4px 0;background:none;border:none}
       </div>
     </div>
     <div class="splash-anon"><div class="anon-dot"></div>Source anonyme · Aucun auteur identifiable · Hébergé hors infrastructure CY Tech</div>
-    <div style="margin-top:1.5rem;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="splash-btn" onclick="closeSplash()">Voir la démonstration →</button>
-      <button class="splash-btn" style="background:transparent;border:1px solid var(--bd);color:var(--mu)" onclick="closeSplash()">Passer</button>
-    </div>
+  </div>
+  <div class="splash-sticky-btn">
+    <button class="splash-btn" onclick="closeSplash()" style="flex:1;max-width:280px">Voir la démonstration →</button>
   </div>
 </div>
 
@@ -655,15 +681,14 @@ function buildFullPrefs(basePrefs,spec,randomizeFallback=false){
     if(u?.id&&!seen.has(u.id)){seen.add(u.id);out.push(u);}
   });
 
+  // Only add fallbacks FROM THE SAME SPECIALIZATION — realistic
   let specPool=UNIS.filter(u=>u.s.includes(spec));
-  let otherPool=UNIS.filter(u=>!u.s.includes(spec));
 
   if(randomizeFallback){
     specPool=shuffle(specPool);
-    otherPool=shuffle(otherPool);
   }
 
-  [...specPool,...otherPool].forEach(u=>{
+  specPool.forEach(u=>{
     if(!seen.has(u.id)){seen.add(u.id);out.push(u);}
   });
 
